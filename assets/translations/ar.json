@@ -1,0 +1,24 @@
+{
+  "pullToRefreshIdleText": "اسحب للأسفل للتحديث",
+  "pullToRefreshReleaseText": "اترك للتحديث",
+  "pullToRefreshRefreshingText": "جاري التحديث",
+  "pullToRefreshCompleteText": "تم التحديث بنجاح",
+  "pullToRefreshFailedText": "فشل التحديث",
+  "image_pick_error": "حدث خطأ أثناء محاولة اختيار الصورة. يرجى المحاولة مرة أخرى.",
+  "no_image_selected": "لم يتم اختيار أي صورة. يرجى اختيار صورة أولاً.",
+  "noImageSelected": "لم يتم اختيار صورة!",
+  "pleaseSelectImageFirst": "الرجاء اختيار صورة أولاً!",
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+  "passwordRequired": "كلمة المرور مطلوبة",
+  "passwordTooShort": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+  "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "fieldRequired": "مطلوب",
+  "invalidSyntax": "تعذر على الخادم فهم الطلب بسبب أخطاء في بناء الجملة أو المعلمات.",
+  "home": "الرئيسية",
+  "locator": "المحدد",
+  "vault": "الخزنة",
+  "establishingSecureConnection": "جارٍ إنشاء اتصال آمن"
+
+}

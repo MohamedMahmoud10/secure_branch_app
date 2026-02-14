@@ -1,0 +1,98 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:secure_branch_app/config/theme/app_colors.dart';
+import 'package:secure_branch_app/config/theme/app_system_ui_overlay_styles.dart';
+import 'package:secure_branch_app/core/assets/app_icons.dart';
+import 'package:secure_branch_app/features/main_navigation/widgets/navigation_bar_icons.dart';
+import 'package:secure_branch_app/generated/locale_keys.g.dart';
+
+class SecureBranchMainNavigationScreen extends StatefulWidget {
+  const SecureBranchMainNavigationScreen({
+    required this.navigationShell,
+    super.key,
+    this.hideChatScreen = false,
+  });
+
+  final StatefulNavigationShell navigationShell;
+  final bool? hideChatScreen;
+
+  @override
+  State<SecureBranchMainNavigationScreen> createState() =>
+      _SecureBranchMainNavigationScreenState();
+}
+
+class _SecureBranchMainNavigationScreenState
+    extends State<SecureBranchMainNavigationScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final int currentIndex = widget.navigationShell.currentIndex;
+    void goBranch(int index) {
+      widget.navigationShell.goBranch(
+        index,
+        initialLocation: index == widget.navigationShell.currentIndex,
+      );
+    }
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: AppSystemUiOverlayStyles.darkStatusBarIconsStyle.copyWith(
+        statusBarColor: AppColors.transparent,
+        systemNavigationBarColor: Theme.of(
+          context,
+        ).colorScheme.secondaryContainer,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        body: widget.navigationShell,
+        bottomNavigationBar: Container(
+          height: 68.h,
+          width: double.infinity,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            shadows: const <BoxShadow>[
+              BoxShadow(
+                color: AppColors.primary,
+                blurRadius: 50,
+                offset: Offset(0, -20),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  NavBarIcon(
+                    icon: AppIcons.dashboardIcon,
+                    label: LocaleKeys.home.tr(),
+                    active: currentIndex == 0,
+                    onClick: () => goBranch(0),
+                  ),
+                  NavBarIcon(
+                    icon: AppIcons.mapIcon,
+                    label: LocaleKeys.locator.tr(),
+                    active: currentIndex == 1,
+                    onClick: () => goBranch(1),
+                  ),
+                  NavBarIcon(
+                    icon: AppIcons.shieldIcon,
+                    label: LocaleKeys.vault.tr(),
+                    active: currentIndex == 2,
+                    onClick: () => goBranch(2),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
