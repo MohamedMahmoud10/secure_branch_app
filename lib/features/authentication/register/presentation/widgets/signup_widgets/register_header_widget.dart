@@ -40,10 +40,8 @@ class RegisterHeaderWidget extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     LocaleKeys.createSecureId.tr(),
-                    style: TextStyle(
-                      color: Colors.white,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
                       letterSpacing: 3,
                     ),
                   ),

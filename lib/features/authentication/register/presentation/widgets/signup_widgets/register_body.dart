@@ -18,6 +18,8 @@ class RegisterBody extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
     return RegisterListenerWidget(
       child: FormBuilder(
         key: context.read<RegisterCubit>().form,
@@ -40,19 +42,14 @@ class RegisterBody extends HookWidget {
                         children: <InlineSpan>[
                           TextSpan(
                             text: LocaleKeys.alreadyPartOfTheNetwork.tr(),
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 13.sp,
-                            ),
+                            style: theme.textTheme.labelSmall,
                           ),
                           WidgetSpan(child: SizedBox(width: 2.w)),
                           TextSpan(
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => context.go(RouteNames.login),
                             text: LocaleKeys.logIn.tr(),
-                            style: const TextStyle(
-                              color: AppColors.primaryLight,
-                              fontWeight: FontWeight.bold,
+                            style: theme.textTheme.labelMedium?.copyWith(
                               decoration: TextDecoration.underline,
                               decorationColor: AppColors.primaryLight,
                             ),

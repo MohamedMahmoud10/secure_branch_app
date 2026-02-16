@@ -12,6 +12,7 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return Container(
       width: double.infinity,
       height: 320.h,
@@ -50,16 +51,11 @@ class HeaderWidget extends StatelessWidget {
                 SizedBox(height: 16.h),
                 Text(
                   LocaleKeys.cubicSecure.tr(),
-                  style: TextStyle(
-                    color: AppColors.primaryWhite,
-                    fontSize: 26.sp,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
+                  style: theme.textTheme.bodyLarge?.copyWith(letterSpacing: 2),
                 ),
                 Text(
                   LocaleKeys.enterpriseGradeProtection.tr(),
-                  style: TextStyle(color: AppColors.textHint, fontSize: 14.sp),
+                  style: theme.textTheme.labelSmall,
                 ),
               ],
             ),

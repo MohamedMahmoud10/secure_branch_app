@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/navigation/route_names.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
-import 'package:secure_branch_app/core/const/dimension/dimensions.dart';
 import 'package:secure_branch_app/features/authentication/login/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:secure_branch_app/features/authentication/login/presentation/widgets/login_widgets/index.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
@@ -43,23 +42,25 @@ class LoginBody extends HookWidget {
                   children: <InlineSpan>[
                     TextSpan(
                       text: '${LocaleKeys.dontHaveAccount.tr()} ? ',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        letterSpacing: 0.56.w,
-                        color: theme.colorScheme.onPrimary,
-                      ),
+                      style: theme.textTheme.labelSmall,
                     ),
                     WidgetSpan(child: SizedBox(width: 2.w)),
                     TextSpan(
                       recognizer: TapGestureRecognizer()
                         ..onTap = () => context.go(RouteNames.register),
                       text: LocaleKeys.signIn.tr(),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        letterSpacing: 0.56.w,
-                        color: AppColors.primaryLight,
+                      style: theme.textTheme.labelMedium?.copyWith(
                         decoration: TextDecoration.underline,
-                        fontWeight: AppDimensions.semiBold,
                         decorationColor: AppColors.primaryLight,
                       ),
+
+                      // style: theme.textTheme.bodyMedium?.copyWith(
+                      //   letterSpacing: 0.56.w,
+                      //   color: AppColors.primaryLight,
+                      //   decoration: TextDecoration.underline,
+                      //   fontWeight: AppDimensions.semiBold,
+                      //   decorationColor: AppColors.primaryLight,
+                      // ),
                     ),
                   ],
                 ),
