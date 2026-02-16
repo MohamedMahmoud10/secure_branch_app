@@ -63,10 +63,10 @@ _UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
     _UserDataModel(
       email: json['email'] as String,
       uId: json['uId'] as String?,
-      documentId: json['docId'] as String?,
+      documentId: json['doc_id'] as String?,
       createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
         json['createdAt'],
-        const MyJsonConverter().fromJson,
+        const DateTimeConverter().fromJson,
       ),
       name: json['name'] as String?,
       deviceId: json['deviceId'] as String?,
@@ -76,10 +76,10 @@ Map<String, dynamic> _$UserDataModelToJson(_UserDataModel instance) =>
     <String, dynamic>{
       'email': instance.email,
       'uId': ?instance.uId,
-      'docId': ?instance.documentId,
+      'doc_id': ?instance.documentId,
       'createdAt': ?_$JsonConverterToJson<Timestamp, DateTime>(
         instance.createdAt,
-        const MyJsonConverter().toJson,
+        const DateTimeConverter().toJson,
       ),
       'name': ?instance.name,
       'deviceId': ?instance.deviceId,

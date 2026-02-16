@@ -6,3 +6,9 @@ enum GenericStateStatus {
   changeUi,
   validationError,
 }
+enum TransactionCategory {
+  shop,
+  food,
+  transport,
+  other,
+}

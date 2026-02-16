@@ -27,6 +27,14 @@ import '../../features/authentication/store_user_data/data/data_sources/remote_d
     as _i897;
 import '../../features/authentication/store_user_data/data/repo/store_user_data_repo.dart'
     as _i73;
+import '../../features/transactions/data/remote_data_source/add_transaction_remote_data_source.dart'
+    as _i640;
+import '../../features/transactions/data/remote_data_source/user_transactions_remote_data_source.dart'
+    as _i804;
+import '../../features/transactions/data/repo/add_transaction_repo.dart'
+    as _i704;
+import '../../features/transactions/data/repo/user_transactions_repo.dart'
+    as _i330;
 import '../infrastructure/local_data_base/base_local_data_base.dart' as _i405;
 import '../infrastructure/local_data_base/hive_local_data_base.dart' as _i393;
 import '../infrastructure/network/api_consumer.dart' as _i865;
@@ -80,11 +88,32 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i865.ApiConsumer>(
       () => _i774.DioConsumer(client: gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i640.AddTransactionRemoteDataSource>(
+      () => _i640.AddTransactionRemoteDataSource(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i405.BaseDatabase>(),
+      ),
+    );
+    gh.lazySingleton<_i804.UserTransactionsRemoteDataSource>(
+      () => _i804.UserTransactionsRemoteDataSource(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i405.BaseDatabase>(),
+      ),
+    );
     gh.lazySingleton<_i1058.GetUserDataRepo>(
       () => _i1058.GetUserDataRepo(
         gh<_i480.GetUserDataRemoteDataSource>(),
         gh<_i458.SaveUserDataLocalDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i330.UserTransactionsRepo>(
+      () => _i330.UserTransactionsRepo(
+        gh<_i804.UserTransactionsRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i704.AddTransactionRepo>(
+      () =>
+          _i704.AddTransactionRepo(gh<_i640.AddTransactionRemoteDataSource>()),
     );
     return this;
   }

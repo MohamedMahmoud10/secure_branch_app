@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDataModel {
 
-@HiveField(0) String get email;@HiveField(1) String? get uId;@JsonKey(name: 'docId')@HiveField(2) String? get documentId;@MyJsonConverter()@HiveField(3) DateTime? get createdAt;@HiveField(4) String? get name;/// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
+@HiveField(0) String get email;@HiveField(1) String? get uId;@JsonKey(name: 'doc_id')@HiveField(2) String? get documentId;@DateTimeConverter()@HiveField(3) DateTime? get createdAt;@HiveField(4) String? get name;/// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
 /// Used to associate biometric enrollment with a device in Firestore.
 @JsonKey(name: 'deviceId')@HiveField(5) String? get deviceId;
 /// Create a copy of UserDataModel
@@ -50,7 +50,7 @@ abstract mixin class $UserDataModelCopyWith<$Res>  {
   factory $UserDataModelCopyWith(UserDataModel value, $Res Function(UserDataModel) _then) = _$UserDataModelCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'docId')@HiveField(2) String? documentId,@MyJsonConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
+@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
 });
 
 
@@ -160,7 +160,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'docId')@HiveField(2)  String? documentId, @MyJsonConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDataModel() when $default != null:
 return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
@@ -181,7 +181,7 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'docId')@HiveField(2)  String? documentId, @MyJsonConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)  $default,) {final _that = this;
 switch (_that) {
 case _UserDataModel():
 return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
@@ -201,7 +201,7 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'docId')@HiveField(2)  String? documentId, @MyJsonConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDataModel() when $default != null:
 return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
@@ -216,13 +216,13 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 @JsonSerializable()
 
 class _UserDataModel extends UserDataModel {
-   _UserDataModel({@HiveField(0) required this.email, @HiveField(1) this.uId, @JsonKey(name: 'docId')@HiveField(2) this.documentId, @MyJsonConverter()@HiveField(3) this.createdAt, @HiveField(4) this.name, @JsonKey(name: 'deviceId')@HiveField(5) this.deviceId}): super._();
+   _UserDataModel({@HiveField(0) required this.email, @HiveField(1) this.uId, @JsonKey(name: 'doc_id')@HiveField(2) this.documentId, @DateTimeConverter()@HiveField(3) this.createdAt, @HiveField(4) this.name, @JsonKey(name: 'deviceId')@HiveField(5) this.deviceId}): super._();
   factory _UserDataModel.fromJson(Map<String, dynamic> json) => _$UserDataModelFromJson(json);
 
 @override@HiveField(0) final  String email;
 @override@HiveField(1) final  String? uId;
-@override@JsonKey(name: 'docId')@HiveField(2) final  String? documentId;
-@override@MyJsonConverter()@HiveField(3) final  DateTime? createdAt;
+@override@JsonKey(name: 'doc_id')@HiveField(2) final  String? documentId;
+@override@DateTimeConverter()@HiveField(3) final  DateTime? createdAt;
 @override@HiveField(4) final  String? name;
 /// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
 /// Used to associate biometric enrollment with a device in Firestore.
@@ -261,7 +261,7 @@ abstract mixin class _$UserDataModelCopyWith<$Res> implements $UserDataModelCopy
   factory _$UserDataModelCopyWith(_UserDataModel value, $Res Function(_UserDataModel) _then) = __$UserDataModelCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'docId')@HiveField(2) String? documentId,@MyJsonConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
+@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
 });
 
 

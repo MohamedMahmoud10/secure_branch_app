@@ -8,6 +8,9 @@ class DatabaseConstants {
   static final String usersDataCollection = dotenv.get(
     AppConstantStrings.usersDataCollection,
   );
+  static final String userTransactionCollection = dotenv.get(
+    AppConstantStrings.transactionCollection,
+  );
 
   ///END REGION OF TABLES OF CACHES DATA ON FIRESTORE DATA BASE
 
