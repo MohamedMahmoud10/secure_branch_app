@@ -1,6 +1,7 @@
 part of 'login_cubit.dart';
 
-extension RegisterStateX on LoginState {
+
+extension LoginStateX on LoginState {
   bool get isInitial => status == GenericStateStatus.initial;
 
   bool get isLoading => status == GenericStateStatus.loading;
@@ -8,6 +9,18 @@ extension RegisterStateX on LoginState {
   bool get isLoaded => status == GenericStateStatus.loaded;
 
   bool get isError => status == GenericStateStatus.error;
+
+  bool get isBiometricEnrolling =>
+      biometricEnrollmentStatus == BiometricEnrollmentStatus.enrolling;
+
+  bool get isBiometricEnrolled =>
+      biometricEnrollmentStatus == BiometricEnrollmentStatus.enrolled;
+
+  bool get isBiometricFailed =>
+      biometricEnrollmentStatus == BiometricEnrollmentStatus.failed;
+
+  bool get isBiometricUnavailable =>
+      biometricEnrollmentStatus == BiometricEnrollmentStatus.unavailable;
 }
 
 @immutable
@@ -17,6 +30,7 @@ class LoginState extends Equatable implements LoadableState {
   final UserDataModel? userDataModel;
   final bool? isValidForm;
   final Map<String, String>? validationErrors;
+  final BiometricEnrollmentStatus biometricEnrollmentStatus;
 
   const LoginState({
     required this.status,
@@ -24,6 +38,7 @@ class LoginState extends Equatable implements LoadableState {
     this.errorMsg,
     this.isValidForm = false,
     this.validationErrors,
+    this.biometricEnrollmentStatus = BiometricEnrollmentStatus.idle,
   });
 
   LoginState copyWith({
@@ -32,6 +47,7 @@ class LoginState extends Equatable implements LoadableState {
     UserDataModel? userDataModel,
     bool? isValidForm,
     Map<String, String>? validationErrors,
+    BiometricEnrollmentStatus? biometricEnrollmentStatus,
   }) {
     return LoginState(
       status: status ?? this.status,
@@ -39,12 +55,14 @@ class LoginState extends Equatable implements LoadableState {
       userDataModel: userDataModel ?? this.userDataModel,
       isValidForm: isValidForm ?? this.isValidForm,
       validationErrors: validationErrors ?? this.validationErrors,
+      biometricEnrollmentStatus:
+          biometricEnrollmentStatus ?? this.biometricEnrollmentStatus,
     );
   }
 
   @override
   String toString() {
-    return '''LoginState(status: $status,errorMsg: $errorMsg , userDataModel :$userDataModel, isValidForm:$isValidForm )''';
+    return '''LoginState(status: $status, errorMsg: $errorMsg, userDataModel: $userDataModel, isValidForm: $isValidForm, biometric: $biometricEnrollmentStatus)''';
   }
 
   @override
@@ -57,5 +75,6 @@ class LoginState extends Equatable implements LoadableState {
     userDataModel,
     isValidForm,
     validationErrors,
+    biometricEnrollmentStatus,
   ];
 }

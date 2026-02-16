@@ -9,6 +9,7 @@ import 'package:secure_branch_app/config/theme/app_system_ui_overlay_styles.dart
 import 'package:secure_branch_app/core/assets/app_icons.dart';
 import 'package:secure_branch_app/core/di/index.dart';
 import 'package:secure_branch_app/core/extensions/color_extension.dart';
+import 'package:secure_branch_app/core/services/biometric_auth_service.dart';
 import 'package:secure_branch_app/features/branch/data/repo/branches_repo.dart';
 import 'package:secure_branch_app/features/branch/presentation/cubits/branches_cubit/branches_cubit.dart';
 import 'package:secure_branch_app/features/main_navigation/widgets/navigation_bar_icons.dart';
@@ -59,8 +60,10 @@ class _SecureBranchMainNavigationScreenState
             create: (BuildContext context) => BranchesCubit(di<BranchesRepo>()),
           ),
           BlocProvider<AddTransactionCubit>(
-            create: (BuildContext context) =>
-                AddTransactionCubit(di<AddTransactionRepo>()),
+            create: (BuildContext context) => AddTransactionCubit(
+              di<AddTransactionRepo>(),
+              di<BiometricAuthService>(),
+            ),
           ),
           BlocProvider<TransactionsBloc>(
             create: (BuildContext context) =>

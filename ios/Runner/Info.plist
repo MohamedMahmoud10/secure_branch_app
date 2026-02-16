@@ -47,5 +47,7 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSFaceIDUsageDescription</key>
+		<string>We use Face ID to securely authenticate you with hardware-backed cryptographic keys. Your biometric data never leaves the device.</string>
 	</dict>
 </plist>

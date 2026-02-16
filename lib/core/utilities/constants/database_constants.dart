@@ -23,6 +23,11 @@ class DatabaseConstants {
 
   ///Start REGION OF CACHE KEYS
   static const String userDataKey = 'USER-DATA-VALUE';
+  static const String aesKeyStorageKey = 'BIOMETRIC-AES-KEY';
+  static const String aesIvStorageKey = 'BIOMETRIC-AES-IV';
+  static const String encryptedPasswordKey = 'BIOMETRIC-ENCRYPTED-PASSWORD';
+  static const String biometricEmailKey = 'BIOMETRIC-USER-EMAIL';
+  static const String biometricEnrolledKey = 'BIOMETRIC-ENROLLED';
 
   ///END REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 

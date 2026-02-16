@@ -15,6 +15,12 @@ import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/authentication/biometric_login/data/remote_data_source/biometric_remote_data_source.dart'
+    as _i435;
+import '../../features/authentication/biometric_login/data/repo/biometric_login_repo.dart'
+    as _i10;
+import '../../features/authentication/biometric_login/presentation/cubits/biometric_login_cubit/biometric_login_cubit.dart'
+    as _i549;
 import '../../features/authentication/login/data/remote_data_source/get_user_data_remote_data_source.dart'
     as _i480;
 import '../../features/authentication/login/data/repo/get_user_data_repo.dart'
@@ -46,6 +52,8 @@ import '../infrastructure/network/api_consumer.dart' as _i865;
 import '../infrastructure/network/app_interceptor.dart' as _i356;
 import '../infrastructure/network/dio_consumer.dart' as _i774;
 import '../infrastructure/secure_storage/secure_storage_service.dart' as _i973;
+import '../services/biometric_auth_service.dart' as _i919;
+import '../services/biometric_crypto_service.dart' as _i134;
 import '../services/device_id_service.dart' as _i148;
 import 'register_module.dart' as _i291;
 
@@ -64,9 +72,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i973.SecureStorageService>(
       () => _i973.SecureStorageService(),
     );
+    gh.lazySingleton<_i919.BiometricAuthService>(
+      () => _i919.BiometricAuthService(),
+    );
     gh.lazySingleton<_i148.DeviceIdService>(() => _i148.DeviceIdService());
+    gh.lazySingleton<_i134.BiometricCryptoService>(
+      () => _i134.BiometricCryptoService(gh<_i973.SecureStorageService>()),
+    );
     gh.lazySingleton<_i405.BaseDatabase>(
       () => _i393.HiveDatabaseClient(gh<_i973.SecureStorageService>()),
+    );
+    gh.lazySingleton<_i435.BiometricRemoteDataSource>(
+      () => _i435.BiometricRemoteDataSource(gh<_i974.FirebaseFirestore>()),
     );
     gh.lazySingleton<_i480.GetUserDataRemoteDataSource>(
       () => _i480.GetUserDataRemoteDataSource(gh<_i974.FirebaseFirestore>()),
@@ -108,6 +125,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1034.BranchesLocalDataSource>(
       () => _i1034.BranchesLocalDataSource(gh<_i405.BaseDatabase>()),
     );
+    gh.lazySingleton<_i10.BiometricLoginRepo>(
+      () => _i10.BiometricLoginRepo(
+        gh<_i435.BiometricRemoteDataSource>(),
+        gh<_i458.SaveUserDataLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i1058.GetUserDataRepo>(
       () => _i1058.GetUserDataRepo(
         gh<_i480.GetUserDataRemoteDataSource>(),
@@ -130,6 +153,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i590.BranchesRepo(
         gh<_i707.BranchesRemoteDataSource>(),
         gh<_i1034.BranchesLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i549.BiometricLoginCubit>(
+      () => _i549.BiometricLoginCubit(
+        gh<_i919.BiometricAuthService>(),
+        gh<_i134.BiometricCryptoService>(),
+        gh<_i148.DeviceIdService>(),
+        gh<_i1058.GetUserDataRepo>(),
+        gh<_i59.FirebaseAuth>(),
       ),
     );
     return this;

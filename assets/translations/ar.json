@@ -79,6 +79,32 @@
   "transactionSuccessMessage": "تمت إضافة المعاملة بنجاح",
   "transactionSuccessDescription": "تم تسجيل معاملتك بشكل آمن في السجل",
   "transactionErrorMessage": "فشلت إضافة المعاملة",
-  "transactionErrorDescription": "حدث خطأ أثناء إضافة المعاملة، يرجى المحاولة مرة أخرى"
+  "transactionErrorDescription": "حدث خطأ أثناء إضافة المعاملة، يرجى المحاولة مرة أخرى",
+
+  "biometricLoginButton": "تسجيل الدخول بالبصمة",
+  "biometricOrDivider": "أو",
+  "biometricLoginSuccess": "تم تسجيل الدخول بالبصمة بنجاح",
+  "biometricLoginFailed": "فشل تسجيل الدخول بالبصمة",
+  "biometricLoginFailedDescription": "تعذر التحقق من البصمة. يرجى المحاولة مرة أخرى أو استخدام البريد الإلكتروني وكلمة المرور.",
+  "biometricEnrolledSuccess": "تم تسجيل البصمة",
+  "biometricEnrolledDescription": "يمكنك الآن تسجيل الدخول بأمان باستخدام بصمة الإصبع أو الوجه.",
+  "biometricSkipped": "تم تخطي البصمة",
+  "biometricSkippedDescription": "يمكنك تفعيل تسجيل الدخول بالبصمة لاحقاً من الإعدادات.",
+
+  "transactionBiometricNotice": "يتطلب التحقق بالبصمة للموافقة على هذه المعاملة.",
+  "transactionBiometricFailed": "فشل التحقق بالبصمة",
+  "transactionBiometricFailedDescription": "تعذر التحقق من هويتك. يرجى المحاولة مرة أخرى للموافقة على المعاملة.",
+  "verifyAndSubmit": "تحقق وأرسل",
+  "biometricNotSupported": "جهازك لا يدعم المصادقة البيومترية",
+  "biometricNotEnrolled": "الجهاز يدعم المصادقة البيومترية ولكن لم يتم إعداد أي بصمة أو وجه. يرجى إضافة بصمة إصبع أو وجه في إعدادات الجهاز.",
+  "registerBiometric": "سجل بياناتك البيومترية لتسجيل الدخول الآمن",
+  "authenticateToSignIn": "تحقق من هويتك لتسجيل الدخول",
+  "storedCredentialsNotFound": "لم يتم العثور على بيانات الاعتماد المخزنة. الرجاء تسجيل الدخول بالبريد الإلكتروني وكلمة المرور لإعادة تسجيل البيانات البيومترية.",
+  "biometricAuthFailedOrCancelled": "تم إلغاء أو فشل المصادقة البيومترية.",
+  "firebaseAuthFailed": "فشل المصادقة مع Firebase.",
+  "authenticationFailed": "فشل المصادقة.",
+  "unexpectedError": "حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى.",
+  "userIdRequired": "معرف المستخدم مطلوب لتخزين بيانات المستخدم."
 
 }
+

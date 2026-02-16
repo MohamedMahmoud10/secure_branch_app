@@ -19,10 +19,12 @@ class AuthLogoutService {
   final SecureStorageService _secureStorage;
 
   /// Signs out from Firebase, clears local user data, closes the user box,
-  /// and removes the encryption key from secure storage.
+  /// and removes the Hive encryption key from secure storage.
+  ///
+  /// **Biometric keys & encrypted credentials are preserved** so the user
+  /// can sign back in with biometric without re-enrolling.
   Future<void> logout() async {
     await _auth.signOut();
-
 
     await Future.wait(<Future<void>>[
       _db.delete<UserDataModel>(

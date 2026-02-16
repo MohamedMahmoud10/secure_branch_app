@@ -17,7 +17,10 @@ mixin _$UserDataModel {
 
 @HiveField(0) String get email;@HiveField(1) String? get uId;@JsonKey(name: 'doc_id')@HiveField(2) String? get documentId;@DateTimeConverter()@HiveField(3) DateTime? get createdAt;@HiveField(4) String? get name;/// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
 /// Used to associate biometric enrollment with a device in Firestore.
-@JsonKey(name: 'deviceId')@HiveField(5) String? get deviceId;
+@JsonKey(name: 'deviceId')@HiveField(5) String? get deviceId;/// The hardware-backed public key (PEM) stored during biometric enrollment.
+/// Used to verify cryptographic signatures produced by the device.
+@JsonKey(name: 'biometricPublicKey')@HiveField(6) String? get biometricPublicKey;/// Whether biometric login has been enabled for this user / device.
+@JsonKey(name: 'biometricEnabled')@HiveField(7) bool get biometricEnabled;
 /// Create a copy of UserDataModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +33,16 @@ $UserDataModelCopyWith<UserDataModel> get copyWith => _$UserDataModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDataModel&&(identical(other.email, email) || other.email == email)&&(identical(other.uId, uId) || other.uId == uId)&&(identical(other.documentId, documentId) || other.documentId == documentId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDataModel&&(identical(other.email, email) || other.email == email)&&(identical(other.uId, uId) || other.uId == uId)&&(identical(other.documentId, documentId) || other.documentId == documentId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.biometricPublicKey, biometricPublicKey) || other.biometricPublicKey == biometricPublicKey)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,uId,documentId,createdAt,name,deviceId);
+int get hashCode => Object.hash(runtimeType,email,uId,documentId,createdAt,name,deviceId,biometricPublicKey,biometricEnabled);
 
 @override
 String toString() {
-  return 'UserDataModel(email: $email, uId: $uId, documentId: $documentId, createdAt: $createdAt, name: $name, deviceId: $deviceId)';
+  return 'UserDataModel(email: $email, uId: $uId, documentId: $documentId, createdAt: $createdAt, name: $name, deviceId: $deviceId, biometricPublicKey: $biometricPublicKey, biometricEnabled: $biometricEnabled)';
 }
 
 
@@ -50,7 +53,7 @@ abstract mixin class $UserDataModelCopyWith<$Res>  {
   factory $UserDataModelCopyWith(UserDataModel value, $Res Function(UserDataModel) _then) = _$UserDataModelCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
+@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId,@JsonKey(name: 'biometricPublicKey')@HiveField(6) String? biometricPublicKey,@JsonKey(name: 'biometricEnabled')@HiveField(7) bool biometricEnabled
 });
 
 
@@ -67,7 +70,7 @@ class _$UserDataModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDataModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? uId = freezed,Object? documentId = freezed,Object? createdAt = freezed,Object? name = freezed,Object? deviceId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? uId = freezed,Object? documentId = freezed,Object? createdAt = freezed,Object? name = freezed,Object? deviceId = freezed,Object? biometricPublicKey = freezed,Object? biometricEnabled = null,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,uId: freezed == uId ? _self.uId : uId // ignore: cast_nullable_to_non_nullable
@@ -75,7 +78,9 @@ as String?,documentId: freezed == documentId ? _self.documentId : documentId // 
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,biometricPublicKey: freezed == biometricPublicKey ? _self.biometricPublicKey : biometricPublicKey // ignore: cast_nullable_to_non_nullable
+as String?,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -160,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId, @JsonKey(name: 'biometricPublicKey')@HiveField(6)  String? biometricPublicKey, @JsonKey(name: 'biometricEnabled')@HiveField(7)  bool biometricEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDataModel() when $default != null:
-return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
+return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId,_that.biometricPublicKey,_that.biometricEnabled);case _:
   return orElse();
 
 }
@@ -181,10 +186,10 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId, @JsonKey(name: 'biometricPublicKey')@HiveField(6)  String? biometricPublicKey, @JsonKey(name: 'biometricEnabled')@HiveField(7)  bool biometricEnabled)  $default,) {final _that = this;
 switch (_that) {
 case _UserDataModel():
-return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
+return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId,_that.biometricPublicKey,_that.biometricEnabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +206,10 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String email, @HiveField(1)  String? uId, @JsonKey(name: 'doc_id')@HiveField(2)  String? documentId, @DateTimeConverter()@HiveField(3)  DateTime? createdAt, @HiveField(4)  String? name, @JsonKey(name: 'deviceId')@HiveField(5)  String? deviceId, @JsonKey(name: 'biometricPublicKey')@HiveField(6)  String? biometricPublicKey, @JsonKey(name: 'biometricEnabled')@HiveField(7)  bool biometricEnabled)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDataModel() when $default != null:
-return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId);case _:
+return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.name,_that.deviceId,_that.biometricPublicKey,_that.biometricEnabled);case _:
   return null;
 
 }
@@ -216,7 +221,7 @@ return $default(_that.email,_that.uId,_that.documentId,_that.createdAt,_that.nam
 @JsonSerializable()
 
 class _UserDataModel extends UserDataModel {
-   _UserDataModel({@HiveField(0) required this.email, @HiveField(1) this.uId, @JsonKey(name: 'doc_id')@HiveField(2) this.documentId, @DateTimeConverter()@HiveField(3) this.createdAt, @HiveField(4) this.name, @JsonKey(name: 'deviceId')@HiveField(5) this.deviceId}): super._();
+   _UserDataModel({@HiveField(0) required this.email, @HiveField(1) this.uId, @JsonKey(name: 'doc_id')@HiveField(2) this.documentId, @DateTimeConverter()@HiveField(3) this.createdAt, @HiveField(4) this.name, @JsonKey(name: 'deviceId')@HiveField(5) this.deviceId, @JsonKey(name: 'biometricPublicKey')@HiveField(6) this.biometricPublicKey, @JsonKey(name: 'biometricEnabled')@HiveField(7) this.biometricEnabled = false}): super._();
   factory _UserDataModel.fromJson(Map<String, dynamic> json) => _$UserDataModelFromJson(json);
 
 @override@HiveField(0) final  String email;
@@ -227,6 +232,11 @@ class _UserDataModel extends UserDataModel {
 /// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
 /// Used to associate biometric enrollment with a device in Firestore.
 @override@JsonKey(name: 'deviceId')@HiveField(5) final  String? deviceId;
+/// The hardware-backed public key (PEM) stored during biometric enrollment.
+/// Used to verify cryptographic signatures produced by the device.
+@override@JsonKey(name: 'biometricPublicKey')@HiveField(6) final  String? biometricPublicKey;
+/// Whether biometric login has been enabled for this user / device.
+@override@JsonKey(name: 'biometricEnabled')@HiveField(7) final  bool biometricEnabled;
 
 /// Create a copy of UserDataModel
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDataModel&&(identical(other.email, email) || other.email == email)&&(identical(other.uId, uId) || other.uId == uId)&&(identical(other.documentId, documentId) || other.documentId == documentId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDataModel&&(identical(other.email, email) || other.email == email)&&(identical(other.uId, uId) || other.uId == uId)&&(identical(other.documentId, documentId) || other.documentId == documentId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.biometricPublicKey, biometricPublicKey) || other.biometricPublicKey == biometricPublicKey)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,uId,documentId,createdAt,name,deviceId);
+int get hashCode => Object.hash(runtimeType,email,uId,documentId,createdAt,name,deviceId,biometricPublicKey,biometricEnabled);
 
 @override
 String toString() {
-  return 'UserDataModel(email: $email, uId: $uId, documentId: $documentId, createdAt: $createdAt, name: $name, deviceId: $deviceId)';
+  return 'UserDataModel(email: $email, uId: $uId, documentId: $documentId, createdAt: $createdAt, name: $name, deviceId: $deviceId, biometricPublicKey: $biometricPublicKey, biometricEnabled: $biometricEnabled)';
 }
 
 
@@ -261,7 +271,7 @@ abstract mixin class _$UserDataModelCopyWith<$Res> implements $UserDataModelCopy
   factory _$UserDataModelCopyWith(_UserDataModel value, $Res Function(_UserDataModel) _then) = __$UserDataModelCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId
+@HiveField(0) String email,@HiveField(1) String? uId,@JsonKey(name: 'doc_id')@HiveField(2) String? documentId,@DateTimeConverter()@HiveField(3) DateTime? createdAt,@HiveField(4) String? name,@JsonKey(name: 'deviceId')@HiveField(5) String? deviceId,@JsonKey(name: 'biometricPublicKey')@HiveField(6) String? biometricPublicKey,@JsonKey(name: 'biometricEnabled')@HiveField(7) bool biometricEnabled
 });
 
 
@@ -278,7 +288,7 @@ class __$UserDataModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDataModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? uId = freezed,Object? documentId = freezed,Object? createdAt = freezed,Object? name = freezed,Object? deviceId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? uId = freezed,Object? documentId = freezed,Object? createdAt = freezed,Object? name = freezed,Object? deviceId = freezed,Object? biometricPublicKey = freezed,Object? biometricEnabled = null,}) {
   return _then(_UserDataModel(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,uId: freezed == uId ? _self.uId : uId // ignore: cast_nullable_to_non_nullable
@@ -286,7 +296,9 @@ as String?,documentId: freezed == documentId ? _self.documentId : documentId // 
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,biometricPublicKey: freezed == biometricPublicKey ? _self.biometricPublicKey : biometricPublicKey // ignore: cast_nullable_to_non_nullable
+as String?,biometricEnabled: null == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

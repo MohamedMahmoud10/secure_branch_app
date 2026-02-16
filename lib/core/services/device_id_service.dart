@@ -12,13 +12,10 @@ class DeviceIdService {
 
   final DeviceInfoPlugin _deviceInfo;
 
-  /// Returns a device-specific id: Android ID on Android, identifierForVendor on iOS.
-  /// Falls back to a placeholder on other platforms or on error.
   Future<String> getDeviceId() async {
     try {
       if (Platform.isAndroid) {
         final AndroidDeviceInfo info = await _deviceInfo.androidInfo;
-        // fingerprint uniquely identifies this device build; stable across app restarts.
         return info.fingerprint;
       }
       if (Platform.isIOS) {

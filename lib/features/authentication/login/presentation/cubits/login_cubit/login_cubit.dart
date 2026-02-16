@@ -7,7 +7,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:secure_branch_app/core/helpers/enums.dart';
 import 'package:secure_branch_app/core/helpers/validators.dart';
+import 'package:secure_branch_app/core/services/biometric_auth_service.dart';
+import 'package:secure_branch_app/core/services/biometric_crypto_service.dart';
+import 'package:secure_branch_app/core/services/device_id_service.dart';
 import 'package:secure_branch_app/core/utilities/generic_classes/generic.dart';
+import 'package:secure_branch_app/features/authentication/biometric_login/data/repo/biometric_login_repo.dart';
 import 'package:secure_branch_app/features/authentication/login/data/repo/get_user_data_repo.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
@@ -18,9 +22,19 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final FirebaseAuth _auth;
   final GetUserDataRepo _repo;
+  final BiometricAuthService _biometricAuthService;
+  final BiometricCryptoService _biometricCryptoService;
+  final DeviceIdService _deviceIdService;
+  final BiometricLoginRepo _biometricLoginRepo;
 
-  LoginCubit(this._repo, this._auth)
-    : super(const LoginState(status: GenericStateStatus.initial)) {
+  LoginCubit(
+    this._repo,
+    this._auth,
+    this._biometricAuthService,
+    this._biometricCryptoService,
+    this._deviceIdService,
+    this._biometricLoginRepo,
+  ) : super(const LoginState(status: GenericStateStatus.initial)) {
     emailController.addListener(validateLoginFields);
     passwordController.addListener(validateLoginFields);
   }
@@ -66,6 +80,75 @@ class LoginCubit extends Cubit<LoginState> {
           ),
         );
       }
+    }
+  }
+
+  // ─────────────── biometric re-enrollment after login ──────────────────
+
+  /// Call this **after** successful email/password login to re-enroll
+  /// biometric credentials so the user can use biometric next time.
+  ///
+  /// Flow:
+  /// 1. Check hardware availability.
+  /// 2. Generate hardware-backed key pair (prompts biometric).
+  /// 3. Encrypt password → store in flutter_secure_storage.
+  /// 4. Store public key + device ID in Firestore.
+  Future<void> enrollBiometric() async {
+    emit(state.copyWith(
+      biometricEnrollmentStatus: BiometricEnrollmentStatus.enrolling,
+    ));
+
+    try {
+      // 1. Check biometric hardware
+      final bool available =
+          await _biometricAuthService.isBiometricAvailable();
+      if (!available) {
+        AppLogger().info('Login biometric enrollment: hardware not available');
+        emit(state.copyWith(
+          biometricEnrollmentStatus: BiometricEnrollmentStatus.unavailable,
+        ));
+        return;
+      }
+
+      // 2. Create hardware-backed keys (prompts biometric)
+      final String? publicKey = await _biometricAuthService.createKeys();
+      if (publicKey == null) {
+        AppLogger().warning(
+          'Login biometric enrollment: key creation failed / cancelled',
+        );
+        emit(state.copyWith(
+          biometricEnrollmentStatus: BiometricEnrollmentStatus.failed,
+        ));
+        return;
+      }
+
+      // 3. Encrypt & store password in secure storage
+      await _biometricCryptoService.storeCredentials(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // 4. Store public key + device ID in Firestore
+      final String deviceId = await _deviceIdService.getDeviceId();
+      final String userId = state.userDataModel!.uId!;
+
+      await _biometricLoginRepo.storeBiometricEnrollment(
+        userId: userId,
+        publicKey: publicKey,
+        deviceId: deviceId,
+      );
+
+      AppLogger().info(
+        'Login biometric enrollment completed for $userId',
+      );
+      emit(state.copyWith(
+        biometricEnrollmentStatus: BiometricEnrollmentStatus.enrolled,
+      ));
+    } catch (e, st) {
+      AppLogger().error('Login biometric enrollment failed: $e\n$st');
+      emit(state.copyWith(
+        biometricEnrollmentStatus: BiometricEnrollmentStatus.failed,
+      ));
     }
   }
 

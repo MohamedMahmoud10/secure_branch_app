@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  biometric_signature:
+    dependency: "direct main"
+    description:
+      name: biometric_signature
+      sha256: "168c73c15b3dea618f0b5d68ffcc094e28a45c9410f3f17753ebac778ed234da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.3"
   bloc:
     dependency: transitive
     description:

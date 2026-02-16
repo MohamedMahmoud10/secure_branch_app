@@ -15,14 +15,20 @@ abstract class UserDataModel with _$UserDataModel {
     @HiveField(1) String? uId,
     @JsonKey(name: 'doc_id') @HiveField(2) String? documentId,
 
-
     @DateTimeConverter() @HiveField(3) DateTime? createdAt,
 
     @HiveField(4) String? name,
 
-    /// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
-    /// Used to associate biometric enrollment with a device in Firestore.
     @JsonKey(name: 'deviceId') @HiveField(5) String? deviceId,
+
+    @JsonKey(name: 'biometricPublicKey')
+    @HiveField(6)
+    String? biometricPublicKey,
+
+    @JsonKey(name: 'biometricEnabled')
+    @HiveField(7)
+    @Default(false)
+    bool biometricEnabled,
   }) = _UserDataModel;
 
   UserDataModel._();

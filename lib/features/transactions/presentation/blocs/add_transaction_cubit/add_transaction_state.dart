@@ -10,6 +10,12 @@ extension AddTransactionStateX on AddTransactionState {
   bool get isError => status == GenericStateStatus.error;
 
   bool get isFieldsIsNotEmpty => status == GenericStateStatus.validationError;
+
+  bool get isBiometricVerifying =>
+      biometricStatus == TransactionBiometricStatus.verifying;
+
+  bool get isBiometricFailed =>
+      biometricStatus == TransactionBiometricStatus.failed;
 }
 
 @immutable
@@ -20,6 +26,8 @@ class AddTransactionState extends Equatable implements LoadableState {
   final String? userId;
   final Map<String, String>? validationErrors;
   final TransactionCategory? selectedCategory;
+  final TransactionBiometricStatus biometricStatus;
+
   const AddTransactionState({
     required this.status,
     this.errorMsg,
@@ -27,6 +35,7 @@ class AddTransactionState extends Equatable implements LoadableState {
     this.userId,
     this.validationErrors,
     this.selectedCategory,
+    this.biometricStatus = TransactionBiometricStatus.idle,
   });
 
   AddTransactionState copyWith({
@@ -36,6 +45,7 @@ class AddTransactionState extends Equatable implements LoadableState {
     String? userId,
     Map<String, String>? validationErrors,
     TransactionCategory? selectedCategory,
+    TransactionBiometricStatus? biometricStatus,
   }) {
     return AddTransactionState(
       status: status ?? this.status,
@@ -44,12 +54,13 @@ class AddTransactionState extends Equatable implements LoadableState {
       userId: userId ?? this.userId,
       validationErrors: validationErrors ?? this.validationErrors,
       selectedCategory: selectedCategory ?? this.selectedCategory,
+      biometricStatus: biometricStatus ?? this.biometricStatus,
     );
   }
 
   @override
   String toString() {
-    return '''AddTransactionState(status: $status,errorMsg: $errorMsg , isValidForm :$isValidForm, selectedCategory :$selectedCategory, )''';
+    return '''AddTransactionState(status: $status, errorMsg: $errorMsg, isValidForm: $isValidForm, selectedCategory: $selectedCategory, biometric: $biometricStatus)''';
   }
 
   @override
@@ -63,5 +74,6 @@ class AddTransactionState extends Equatable implements LoadableState {
     userId,
     validationErrors,
     selectedCategory,
+    biometricStatus,
   ];
 }

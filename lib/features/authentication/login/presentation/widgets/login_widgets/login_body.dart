@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart'; // Add this package
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -33,7 +33,11 @@ class LoginBody extends HookWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
                 child: const Column(
-                  children: <Widget>[LoginFields()],
+                  children: <Widget>[
+                    LoginFields(),
+
+                    BiometricLoginButton(),
+                  ],
                 ).animate().fadeIn(delay: 400.ms).moveY(begin: 30, end: 0),
               ),
 
@@ -53,14 +57,6 @@ class LoginBody extends HookWidget {
                         decoration: TextDecoration.underline,
                         decorationColor: AppColors.primaryLight,
                       ),
-
-                      // style: theme.textTheme.bodyMedium?.copyWith(
-                      //   letterSpacing: 0.56.w,
-                      //   color: AppColors.primaryLight,
-                      //   decoration: TextDecoration.underline,
-                      //   fontWeight: AppDimensions.semiBold,
-                      //   decorationColor: AppColors.primaryLight,
-                      // ),
                     ),
                   ],
                 ),

@@ -13,19 +13,21 @@ class StoreUserDataRepo {
 
   StoreUserDataRepo(this._remoteDataSource, this._dataLocalDataSource);
 
-  Future<Result<void, FirebaseException>> storeUserData({
+  Future<Result<UserDataModel, FirebaseException>> storeUserData({
     required UserDataModel requestModel,
   }) async {
     try {
-      final void result = await _remoteDataSource.storeUserData(
+
+      final UserDataModel enrichedModel = await _remoteDataSource.storeUserData(
         requestModel: requestModel,
       );
-      await _dataLocalDataSource.saveUserData(requestModel);
 
-      return Success<void, FirebaseException>(result);
+      await _dataLocalDataSource.saveUserData(enrichedModel);
+
+      return Success<UserDataModel, FirebaseException>(enrichedModel);
     } on FirebaseException catch (e) {
       AppLogger().error('Error From Store User Data Repo $e');
-      return Error<void, FirebaseException>(e);
+      return Error<UserDataModel, FirebaseException>(e);
     }
   }
 }

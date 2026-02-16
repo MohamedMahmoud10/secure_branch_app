@@ -23,13 +23,15 @@ class UserDataAdapter extends TypeAdapter<UserDataModel> {
       createdAt: fields[3] as DateTime?,
       name: fields[4] as String?,
       deviceId: fields[5] as String?,
+      biometricPublicKey: fields[6] as String?,
+      biometricEnabled: fields[7] == null ? false : fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserDataModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.email)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class UserDataAdapter extends TypeAdapter<UserDataModel> {
       ..writeByte(4)
       ..write(obj.name)
       ..writeByte(5)
-      ..write(obj.deviceId);
+      ..write(obj.deviceId)
+      ..writeByte(6)
+      ..write(obj.biometricPublicKey)
+      ..writeByte(7)
+      ..write(obj.biometricEnabled);
   }
 
   @override
@@ -70,6 +76,8 @@ _UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
       ),
       name: json['name'] as String?,
       deviceId: json['deviceId'] as String?,
+      biometricPublicKey: json['biometricPublicKey'] as String?,
+      biometricEnabled: json['biometricEnabled'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$UserDataModelToJson(_UserDataModel instance) =>
@@ -83,6 +91,8 @@ Map<String, dynamic> _$UserDataModelToJson(_UserDataModel instance) =>
       ),
       'name': ?instance.name,
       'deviceId': ?instance.deviceId,
+      'biometricPublicKey': ?instance.biometricPublicKey,
+      'biometricEnabled': instance.biometricEnabled,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

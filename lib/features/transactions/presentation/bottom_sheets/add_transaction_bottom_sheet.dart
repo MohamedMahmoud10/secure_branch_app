@@ -151,14 +151,47 @@ class AddTransactionBottomSheet extends StatelessWidget {
               },
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: 16.h),
+
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: AppColors.biometric.withValueOpacity(0.08),
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: AppColors.biometric.withValueOpacity(0.2),
+                ),
+              ),
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.fingerprint,
+                    color: AppColors.biometric,
+                    size: 20.sp,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.transactionBiometricNotice.tr(),
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: AppColors.biometric,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
             CustomLoadingButton<AddTransactionCubit, AddTransactionState>(
               onTap: cubit.addTransaction,
               cubit: cubit,
               loadingState: const AddTransactionState(
                 status: GenericStateStatus.loading,
               ),
-              text: LocaleKeys.encryptAndPushToLedger.tr(),
               backGroundColor: AppColors.primary,
               isClickable: context.select<AddTransactionCubit, bool>(
                 (AddTransactionCubit cubit) => cubit.state.isValidForm!,
@@ -174,6 +207,21 @@ class AddTransactionBottomSheet extends StatelessWidget {
                   message: LocaleKeys.validationGenericError.tr(),
                 );
               },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.fingerprint, color: Colors.white, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Text(
+                    LocaleKeys.verifyAndSubmit.tr(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

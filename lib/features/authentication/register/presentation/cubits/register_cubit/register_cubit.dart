@@ -4,25 +4,38 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:injectable/injectable.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:secure_branch_app/core/helpers/enums.dart';
 import 'package:secure_branch_app/core/helpers/validators.dart';
+import 'package:secure_branch_app/core/services/biometric_auth_service.dart';
+import 'package:secure_branch_app/core/services/biometric_crypto_service.dart';
 import 'package:secure_branch_app/core/services/device_id_service.dart';
 import 'package:secure_branch_app/core/utilities/generic_classes/generic.dart';
+import 'package:secure_branch_app/features/authentication/biometric_login/data/repo/biometric_login_repo.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/repo/store_user_data_repo.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 import 'package:secure_branch_app/utils/app_logger.dart';
 
 part 'register_state.dart';
-
+@injectable
 class RegisterCubit extends Cubit<RegisterState> {
   final StoreUserDataRepo _repo;
   final FirebaseAuth _auth;
   final DeviceIdService _deviceIdService;
+  final BiometricAuthService _biometricAuthService;
+  final BiometricCryptoService _biometricCryptoService;
+  final BiometricLoginRepo _biometricLoginRepo;
 
-  RegisterCubit(this._repo, this._auth, this._deviceIdService)
-    : super(const RegisterState(status: GenericStateStatus.initial)) {
+  RegisterCubit(
+    this._repo,
+    this._auth,
+    this._deviceIdService,
+    this._biometricAuthService,
+    this._biometricCryptoService,
+    this._biometricLoginRepo,
+  ) : super(const RegisterState(status: GenericStateStatus.initial)) {
     emailController.addListener(validateFormFields);
     passwordController.addListener(validateFormFields);
     confirmPasswordController.addListener(validateFormFields);
@@ -48,7 +61,7 @@ class RegisterCubit extends Cubit<RegisterState> {
             );
 
         final String deviceId = await _deviceIdService.getDeviceId();
-        final Result<void, FirebaseException> result = await _repo
+        final Result<UserDataModel, FirebaseException> result = await _repo
             .storeUserData(
               requestModel: UserDataModel(
                 email: emailController.text,
@@ -60,10 +73,11 @@ class RegisterCubit extends Cubit<RegisterState> {
               ),
             );
         result.when(
-          (void success) => emit(
+          (UserDataModel success) => emit(
             state.copyWith(
               status: GenericStateStatus.loaded,
               userId: userData.user!.uid,
+              responseModel: success,
             ),
           ),
           (FirebaseException error) => emit(
@@ -82,6 +96,89 @@ class RegisterCubit extends Cubit<RegisterState> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> enrollBiometric() async {
+    emit(
+      state.copyWith(
+        biometricEnrollmentStatus: BiometricEnrollmentStatus.enrolling,
+      ),
+    );
+
+    try {
+      /// Check biometric hardware
+      final bool available = await _biometricAuthService.isBiometricAvailable();
+      if (!available) {
+        final BiometricStatus status = await _biometricAuthService
+            .getBiometricStatus();
+        switch (status) {
+          case BiometricStatus.noHardware:
+            emit(
+              state.copyWith(
+                biometricEnrollmentStatus:
+                    BiometricEnrollmentStatus.unavailable,
+                errorMsg: LocaleKeys.biometricNotSupported.tr(),
+              ),
+            );
+
+          case BiometricStatus.notEnrolled:
+            emit(
+              state.copyWith(
+                biometricEnrollmentStatus:
+                    BiometricEnrollmentStatus.unavailable,
+                errorMsg: LocaleKeys.biometricNotEnrolled.tr(),
+              ),
+            );
+          case BiometricStatus.failure:
+            emit(
+              state.copyWith(
+                biometricEnrollmentStatus:
+                    BiometricEnrollmentStatus.unavailable,
+                errorMsg: LocaleKeys.biometricNotEnrolled.tr(),
+              ),
+            );
+            return;
+        }
+      }
+
+      final String? publicKey = await _biometricAuthService.createKeys();
+      if (publicKey == null) {
+        emit(
+          state.copyWith(
+            biometricEnrollmentStatus: BiometricEnrollmentStatus.failed,
+          ),
+        );
+        return;
+      }
+
+      await _biometricCryptoService.storeCredentials(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      final String deviceId = await _deviceIdService.getDeviceId();
+      final String userId = state.userId!;
+
+      await _biometricLoginRepo.storeBiometricEnrollment(
+        userId: userId,
+        publicKey: publicKey,
+        deviceId: deviceId,
+      );
+
+      AppLogger().info('Biometric enrollment completed for $userId');
+      emit(
+        state.copyWith(
+          biometricEnrollmentStatus: BiometricEnrollmentStatus.enrolled,
+        ),
+      );
+    } catch (e, st) {
+      AppLogger().error('Biometric enrollment failed: $e\n$st');
+      emit(
+        state.copyWith(
+          biometricEnrollmentStatus: BiometricEnrollmentStatus.failed,
+        ),
+      );
     }
   }
 
@@ -113,7 +210,7 @@ class RegisterCubit extends Cubit<RegisterState> {
 
     emit(
       state.copyWith(
-        status:  GenericStateStatus.validationError,
+        status: GenericStateStatus.validationError,
         validationErrors: errors,
         isValidForm: isValidForm,
       ),

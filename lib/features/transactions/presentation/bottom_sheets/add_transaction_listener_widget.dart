@@ -22,8 +22,13 @@ class AddTransactionListenerWidget extends StatelessWidget {
             message: LocaleKeys.transactionSuccessMessage.tr(),
             description: LocaleKeys.transactionSuccessDescription.tr(),
           );
-        }
-        if (state.isError) {
+        } else if (state.isBiometricFailed) {
+          ToastManager().error(
+            context: context,
+            message: LocaleKeys.transactionBiometricFailed.tr(),
+            description: LocaleKeys.transactionBiometricFailedDescription.tr(),
+          );
+        } else if (state.isError && !state.isBiometricFailed) {
           ToastManager().error(
             context: context,
             message: LocaleKeys.transactionErrorMessage.tr(),

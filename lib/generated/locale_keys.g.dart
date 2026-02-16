@@ -84,5 +84,28 @@ abstract class  LocaleKeys {
   static const transactionSuccessDescription = 'transactionSuccessDescription';
   static const transactionErrorMessage = 'transactionErrorMessage';
   static const transactionErrorDescription = 'transactionErrorDescription';
+  static const biometricLoginButton = 'biometricLoginButton';
+  static const biometricOrDivider = 'biometricOrDivider';
+  static const biometricLoginSuccess = 'biometricLoginSuccess';
+  static const biometricLoginFailed = 'biometricLoginFailed';
+  static const biometricLoginFailedDescription = 'biometricLoginFailedDescription';
+  static const biometricEnrolledSuccess = 'biometricEnrolledSuccess';
+  static const biometricEnrolledDescription = 'biometricEnrolledDescription';
+  static const biometricSkipped = 'biometricSkipped';
+  static const biometricSkippedDescription = 'biometricSkippedDescription';
+  static const transactionBiometricNotice = 'transactionBiometricNotice';
+  static const transactionBiometricFailed = 'transactionBiometricFailed';
+  static const transactionBiometricFailedDescription = 'transactionBiometricFailedDescription';
+  static const verifyAndSubmit = 'verifyAndSubmit';
+  static const biometricNotSupported = 'biometricNotSupported';
+  static const biometricNotEnrolled = 'biometricNotEnrolled';
+  static const registerBiometric = 'registerBiometric';
+  static const authenticateToSignIn = 'authenticateToSignIn';
+  static const storedCredentialsNotFound = 'storedCredentialsNotFound';
+  static const biometricAuthFailedOrCancelled = 'biometricAuthFailedOrCancelled';
+  static const firebaseAuthFailed = 'firebaseAuthFailed';
+  static const authenticationFailed = 'authenticationFailed';
+  static const unexpectedError = 'unexpectedError';
+  static const userIdRequired = 'userIdRequired';
 
 }
