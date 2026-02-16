@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/navigation/app_router.dart';
@@ -166,23 +167,21 @@ class AppHelperFunctions {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  /// Validates cached user data and navigates to the appropriate screen.
+  /// Validates auth and cached user data, then navigates appropriately.
   ///
-  /// This method checks whether a cached [UserDataModel] exists in local storage.
-  /// Based on the presence of this data, it determines the correct navigation flow.
-  ///
-  /// Navigation behavior:
-  /// - If cached user data **exists** → Navigate to the home screen.
-  /// - If cached user data **does not exist** → Navigate to the login screen.
-  ///
-  /// Error handling:
-  /// - If any exception occurs while accessing local storage,
-  ///   the user is redirected to the login screen as a safe fallback.
-  ///
-  /// This method should typically be called during app startup
-  /// (e.g., splash screen or initial routing logic).
+  /// Uses Firebase [currentUser] as source of truth. If no Firebase user,
+  /// always go to login. If Firebase user exists, check local cache for user
+  /// data and go to home or login accordingly.
   Future<void> checkCachedKeysAndNavigate() async {
     try {
+      final User? firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser == null) {
+        AppLogger().info('No Firebase user. Redirecting to login.');
+        router.go(RouteNames.login);
+        return;
+      }
+
+      await dbClient.ensureUserBoxOpen();
       final UserDataModel? userData = dbClient.get<UserDataModel>(
         tableName: DatabaseConstants.userDataTable,
         key: DatabaseConstants.userDataKey,

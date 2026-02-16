@@ -12,12 +12,19 @@ class StoreUserDataRemoteDataSource {
 
   Future<void> storeUserData({required UserDataModel requestModel}) async {
     try {
-      final DocumentReference<Map<String, dynamic>> dataBase = _client
+      final String? uid = requestModel.uId;
+      if (uid == null || uid.isEmpty) {
+        throw FirebaseException(
+          plugin: 'store_user_data',
+          code: 'invalid-uid',
+          message: 'User id is required to store user data.',
+        );
+      }
+      final DocumentReference<Map<String, dynamic>> docRef = _client
           .collection(DatabaseConstants.usersDataCollection)
-          .doc();
-      final String documentId = dataBase.id;
-      await dataBase.set(
-        requestModel.copyWith(documentId: documentId).toJson(),
+          .doc(uid);
+      await docRef.set(
+        requestModel.copyWith(documentId: docRef.id).toJson(),
       );
     } on FirebaseException catch (e) {
       AppLogger().error('Error From Add User To FireStore $e');

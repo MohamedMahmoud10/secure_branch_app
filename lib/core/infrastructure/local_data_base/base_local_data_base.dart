@@ -103,4 +103,11 @@ abstract class BaseDatabase {
     required String key,
     required T Function(T current) updateCallback,
   });
+
+  /// Ensures the encrypted user box is open (for implementations that use it).
+  /// Call before reading user data when the user is authenticated.
+  Future<void> ensureUserBoxOpen();
+
+  /// Closes the user box (e.g. on logout). No-op if not implemented.
+  Future<void> closeUserBox();
 }

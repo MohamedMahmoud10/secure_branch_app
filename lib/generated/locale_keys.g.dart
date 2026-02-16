@@ -16,6 +16,7 @@ abstract class  LocaleKeys {
   static const invalidEmail = 'invalidEmail';
   static const passwordRequired = 'passwordRequired';
   static const passwordTooShort = 'passwordTooShort';
+  static const passwordWeak = 'passwordWeak';
   static const confirmPasswordRequired = 'confirmPasswordRequired';
   static const passwordsDoNotMatch = 'passwordsDoNotMatch';
   static const fieldRequired = 'fieldRequired';

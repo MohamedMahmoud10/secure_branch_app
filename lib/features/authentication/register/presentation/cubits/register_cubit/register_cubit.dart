@@ -7,6 +7,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:secure_branch_app/core/helpers/enums.dart';
 import 'package:secure_branch_app/core/helpers/validators.dart';
+import 'package:secure_branch_app/core/services/device_id_service.dart';
 import 'package:secure_branch_app/core/utilities/generic_classes/generic.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/repo/store_user_data_repo.dart';
@@ -18,8 +19,9 @@ part 'register_state.dart';
 class RegisterCubit extends Cubit<RegisterState> {
   final StoreUserDataRepo _repo;
   final FirebaseAuth _auth;
+  final DeviceIdService _deviceIdService;
 
-  RegisterCubit(this._repo, this._auth)
+  RegisterCubit(this._repo, this._auth, this._deviceIdService)
     : super(const RegisterState(status: GenericStateStatus.initial)) {
     emailController.addListener(validateFormFields);
     passwordController.addListener(validateFormFields);
@@ -45,11 +47,16 @@ class RegisterCubit extends Cubit<RegisterState> {
               password: passwordController.text,
             );
 
+        final String deviceId = await _deviceIdService.getDeviceId();
         final Result<void, FirebaseException> result = await _repo
             .storeUserData(
               requestModel: UserDataModel(
                 email: emailController.text,
                 uId: userData.user!.uid,
+                name: nameController.text.trim().isEmpty
+                    ? null
+                    : nameController.text.trim(),
+                deviceId: deviceId,
               ),
             );
         result.when(

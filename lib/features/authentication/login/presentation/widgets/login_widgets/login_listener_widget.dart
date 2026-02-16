@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:secure_branch_app/config/navigation/route_names.dart';
 import 'package:secure_branch_app/core/common_widgets/toast_manager.dart';
 import 'package:secure_branch_app/features/authentication/login/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
@@ -25,6 +27,9 @@ class LoginListenerWidget extends StatelessWidget {
               namedArgs: <String, String>{'email': responseData?.email ?? ''},
             ),
           );
+          if (context.mounted) {
+            context.go(RouteNames.home);
+          }
         } else if (state.isError) {
           ToastManager().error(
             context: context,

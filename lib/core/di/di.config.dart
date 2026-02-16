@@ -19,6 +19,8 @@ import '../../features/authentication/login/data/remote_data_source/get_user_dat
     as _i480;
 import '../../features/authentication/login/data/repo/get_user_data_repo.dart'
     as _i1058;
+import '../../features/authentication/logout/data/auth_logout_service.dart'
+    as _i22;
 import '../../features/authentication/store_user_data/data/data_sources/local_data_source/save_user_data_local_data_source.dart'
     as _i458;
 import '../../features/authentication/store_user_data/data/data_sources/remote_data_source/store_user_data_remote_data_source.dart'
@@ -30,6 +32,8 @@ import '../infrastructure/local_data_base/hive_local_data_base.dart' as _i393;
 import '../infrastructure/network/api_consumer.dart' as _i865;
 import '../infrastructure/network/app_interceptor.dart' as _i356;
 import '../infrastructure/network/dio_consumer.dart' as _i774;
+import '../infrastructure/secure_storage/secure_storage_service.dart' as _i973;
+import '../services/device_id_service.dart' as _i148;
 import 'register_module.dart' as _i291;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -44,7 +48,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.fireStore);
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i356.AppInterceptors>(() => _i356.AppInterceptors());
-    gh.lazySingleton<_i405.BaseDatabase>(() => _i393.HiveDatabaseClient());
+    gh.lazySingleton<_i973.SecureStorageService>(
+      () => _i973.SecureStorageService(),
+    );
+    gh.lazySingleton<_i148.DeviceIdService>(() => _i148.DeviceIdService());
+    gh.lazySingleton<_i405.BaseDatabase>(
+      () => _i393.HiveDatabaseClient(gh<_i973.SecureStorageService>()),
+    );
     gh.lazySingleton<_i480.GetUserDataRemoteDataSource>(
       () => _i480.GetUserDataRemoteDataSource(gh<_i974.FirebaseFirestore>()),
     );
@@ -58,6 +68,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i73.StoreUserDataRepo(
         gh<_i897.StoreUserDataRemoteDataSource>(),
         gh<_i458.SaveUserDataLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i22.AuthLogoutService>(
+      () => _i22.AuthLogoutService(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i405.BaseDatabase>(),
+        gh<_i973.SecureStorageService>(),
       ),
     );
     gh.lazySingleton<_i865.ApiConsumer>(

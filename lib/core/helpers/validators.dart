@@ -21,9 +21,27 @@ class Validators {
     return null;
   }
 
+  /// Minimum length for a strong password.
+  static const int minPasswordLength = 8;
+
+  /// Returns true if password has at least [minPasswordLength] and
+  /// contains at least one letter and one number.
+  static bool isStrongPassword(String value) {
+    if (value.length < minPasswordLength) return false;
+    final bool hasLetter = RegExp('[a-zA-Z]').hasMatch(value);
+    final bool hasNumber = RegExp('[0-9]').hasMatch(value);
+    return hasLetter && hasNumber;
+  }
+
   static String? validatePassword(String? value) {
     if (value == null || value.trim().isEmpty) {
       return LocaleKeys.passwordRequired.tr();
+    }
+    if (value.length < minPasswordLength) {
+      return LocaleKeys.passwordTooShort.tr();
+    }
+    if (!isStrongPassword(value)) {
+      return LocaleKeys.passwordWeak.tr();
     }
     return null;
   }

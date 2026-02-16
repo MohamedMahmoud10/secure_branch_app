@@ -21,13 +21,15 @@ class UserDataAdapter extends TypeAdapter<UserDataModel> {
       uId: fields[1] as String?,
       documentId: fields[2] as String?,
       createdAt: fields[3] as DateTime?,
+      name: fields[4] as String?,
+      deviceId: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserDataModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.email)
       ..writeByte(1)
@@ -35,7 +37,11 @@ class UserDataAdapter extends TypeAdapter<UserDataModel> {
       ..writeByte(2)
       ..write(obj.documentId)
       ..writeByte(3)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(4)
+      ..write(obj.name)
+      ..writeByte(5)
+      ..write(obj.deviceId);
   }
 
   @override
@@ -62,6 +68,8 @@ _UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
         json['createdAt'],
         const MyJsonConverter().fromJson,
       ),
+      name: json['name'] as String?,
+      deviceId: json['deviceId'] as String?,
     );
 
 Map<String, dynamic> _$UserDataModelToJson(_UserDataModel instance) =>
@@ -73,6 +81,8 @@ Map<String, dynamic> _$UserDataModelToJson(_UserDataModel instance) =>
         instance.createdAt,
         const MyJsonConverter().toJson,
       ),
+      'name': ?instance.name,
+      'deviceId': ?instance.deviceId,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(
