@@ -1,491 +1,568 @@
-# Architecture Decision Records (ADR)
+# Architecture Decision Record (ADR)
 
-> Secure Banking Branch Locator — Technical Assessment  
-> This document explains **why** each library was chosen, the security model behind every decision, and how performance targets (60 fps, offline-first) are achieved.
+## Secure Banking Branch Locator — Cubic Flutter Assessment
+
+**Author:** Developer  
+**Date:** February 2026  
+**Status:** Accepted
 
 ---
 
 ## Table of Contents
 
-1. [ADR-001 — Biometric Authentication: `biometric_signature`](#adr-001--biometric-authentication-biometric_signature)
-2. [ADR-002 — Credential Encryption: AES-256-CBC via `encrypt`](#adr-002--credential-encryption-aes-256-cbc-via-encrypt)
-3. [ADR-003 — Secure Key Storage: `flutter_secure_storage`](#adr-003--secure-key-storage-flutter_secure_storage)
-4. [ADR-004 — Local Database: Hive CE with AES Encryption at Rest](#adr-004--local-database-hive-ce-with-aes-encryption-at-rest)
-5. [ADR-005 — Background Concurrency: Dart Isolates via `compute()`](#adr-005--background-concurrency-dart-isolates-via-compute)
-6. [ADR-006 — Location & Nearest-50 Filtering: `geolocator` + Haversine](#adr-006--location--nearest-50-filtering-geolocator--haversine)
-7. [ADR-007 — Cloud Security: Firebase Security Rules](#adr-007--cloud-security-firebase-security-rules)
-8. [ADR-008 — State Management: `flutter_bloc`](#adr-008--state-management-flutter_bloc)
-9. [Architecture Overview](#architecture-overview)
-10. [Security Threat Model](#security-threat-model)
+1. [Project Overview](#1-project-overview)
+2. [Architecture Pattern](#2-architecture-pattern)
+3. [Local Storage — Hive CE](#3-local-storage--hive-ce)
+4. [Encryption at Rest — AES-256 via HiveAesCipher](#4-encryption-at-rest--aes-256-via-hiveaecipher)
+5. [Key Management — Flutter Secure Storage](#5-key-management--flutter-secure-storage)
+6. [Biometric Authentication — Hardware-Backed Keys](#6-biometric-authentication--hardware-backed-keys)
+7. [Network & Performance — Isolates](#7-network--performance--isolates)
+8. [Offline-First Data Strategy](#8-offline-first-data-strategy)
+9. [Firebase Security Rules](#9-firebase-security-rules)
+10. [State Management — BLoC / Cubit](#10-state-management--bloc--cubit)
+11. [Dependency Injection — GetIt + Injectable](#11-dependency-injection--getit--injectable)
+12. [Navigation — GoRouter with Auth Guards](#12-navigation--gorouter-with-auth-guards)
+13. [Summary of Key Decisions](#13-summary-of-key-decisions)
 
 ---
 
-## ADR-001 — Biometric Authentication: `biometric_signature`
+## 1. Project Overview
+
+The app is a **Secure Banking Branch Locator** that satisfies the following requirements:
+
+| Requirement | Solution |
+|---|---|
+| Firebase Auth (email/password) | `firebase_auth` with email + password |
+| Biometric login for returning users | `biometric_signature` (hardware-backed ECDSA) + AES-256-CBC for credential encryption |
+| Home dashboard | Account card, credit card widget, recent transactions, CTA to branches |
+| Fetch ~10,000 branches/ATMs | `dio` HTTP client, JSON parsed in Dart `Isolate` via `compute()` |
+| Show nearest 50 on map | Haversine distance computed in `Isolate`, top-50 sorted by proximity |
+| Encrypted local database | `hive_ce` with `HiveAesCipher` (AES-256) |
+| Hardware-backed key storage | `flutter_secure_storage` (Android Keystore / iOS Keychain) |
+| Favorite branches synced to Firebase | Firestore subcollection `users/{uid}/favorites/{branchId}` |
+| Per-user Firebase rules | Firestore rules enforce `request.auth.uid == userId` |
+| Offline-first | Cache-first reads, optimistic writes, remote-wins sync |
+
+---
+
+## 2. Architecture Pattern
+
+### Decision
+
+Feature-based **clean architecture** with three layers per feature:
+
+```
+feature/
+├── data/
+│   ├── data_sources/
+│   │   ├── remote_data_source/    ← Dio / Firestore calls
+│   │   └── local_data_source/     ← Hive reads/writes
+│   ├── models/                    ← Freezed + HiveType + JsonSerializable
+│   └── repo/                      ← Coordinates local ↔ remote
+└── presentation/
+    ├── cubits/                    ← BLoC / Cubit + State
+    ├── screens/                   ← Full-page widgets
+    └── widgets/                   ← Reusable UI pieces
+```
 
 ### Context
 
-The assessment requires enterprise-grade biometric login for future sessions. Two packages were evaluated:
+The assessment requires authentication, networking, local storage, encryption, and biometric features — all of which benefit from a clear separation of concerns.
 
-| Criteria | `local_auth` | `biometric_signature` |
+### Rationale
+
+- **Testability:** Each layer can be tested independently (mock data sources, test cubits without network).
+- **Scalability:** Adding new features (e.g., favorites) only requires adding a new `feature/` directory following the same pattern.
+- **Maintainability:** Changes to Firestore schema don't ripple into the UI; changes to the UI don't affect data persistence logic.
+
+### Alternatives Considered
+
+| Alternative | Why Not |
+|---|---|
+| MVC | Doesn't scale well for complex Flutter apps; controller becomes a god object. |
+| MVVM | Viable, but BLoC/Cubit ecosystem is more mature in Flutter and aligns better with reactive streams. |
+| Monolithic (all in `lib/`) | Would quickly become unmanageable with this many cross-cutting concerns. |
+
+---
+
+## 3. Local Storage — Hive CE
+
+### Decision
+
+Use **Hive CE** (Community Edition) as the primary local NoSQL database for persisting branches, user data, and favorites.
+
+### Context
+
+The app must persist ~10,000 branch records locally for offline access. The data is structured as flat key-value objects (no relational queries needed).
+
+### Rationale
+
+| Factor | Hive CE | SQLite (sqflite) | Isar | SharedPreferences |
+|---|---|---|---|---|
+| **Speed** | Very fast (binary, zero-copy) | Good for relational | Fast | Slow for large data |
+| **Encryption** | Built-in `HiveAesCipher` | Requires SQLCipher (extra native dep) | Built-in | Not suitable |
+| **Schema** | Schema-free (NoSQL) | SQL schema required | Schema-free | Key-value only |
+| **Code generation** | `@HiveType` adapters via `hive_ce_generator` | Manual mapping | `@Collection` via `isar_generator` | N/A |
+| **Flutter integration** | `hive_ce_flutter` (initFlutter) | Native plugin | Native plugin | Plugin |
+| **Bundle size** | Minimal (pure Dart) | Includes native SQLite | Includes native binary | Minimal |
+
+**Why Hive CE over original Hive:** Hive CE is the actively maintained community fork. The original `hive` package is no longer maintained. Hive CE provides the same API with ongoing bug fixes, Flutter 3.x compatibility, and improved code generation.
+
+**Why not SQLite:** The data is flat (no joins, no complex queries). AES encryption with SQLite requires SQLCipher, which adds a native dependency and increases APK size. Hive's built-in `HiveAesCipher` satisfies the encryption-at-rest requirement with zero additional native code.
+
+### Encrypted Boxes
+
+All sensitive local data resides in encrypted Hive boxes:
+
+| Box Name | Type | Contents |
 |---|---|---|
-| Authentication type | UI-level boolean (yes/no) | Cryptographic signature |
-| Hardware backing | None — delegates to OS prompt | Secure Enclave (iOS) / StrongBox Keystore (Android) |
-| Backend verifiability | ❌ Cannot verify on server | ✅ Public key stored server-side for signature verification |
-| Replay attack protection | ❌ No challenge mechanism | ✅ Dynamic payload signing prevents replay |
-| Key invalidation | N/A | ✅ `setInvalidatedByBiometricEnrollment: true` — keys auto-invalidate when biometrics change |
+| `USER-DATA-TABLE` | `Box<UserDataModel>` | Cached user profile (uid, email, name, deviceId) |
+| `BRANCHES-TABLE` | `Box<BranchesResponseModel>` | ~10,000 cached branches/ATMs |
+| `FAVORITES-TABLE` | `Box<FavoriteBranchModel>` | User's favorited branches |
 
-### Decision
-
-**Use `biometric_signature` (v9.0.3)** for all biometric operations.
-
-### Implementation Details
-
-**Key Generation (Registration / Login Enrollment):**
-
-```dart
-final KeyCreationResult result = await _biometricSignature.createKeys(
-  promptMessage: 'Register your biometric for secure login',
-  keyFormat: KeyFormat.pem,
-  config: CreateKeysConfig(
-    signatureType: SignatureType.ecdsa,      // Elliptic Curve — smaller, faster
-    enforceBiometric: true,                   // Require biometric (not PIN fallback)
-    setInvalidatedByBiometricEnrollment: true, // Auto-revoke if user adds new fingerprint
-    enableDecryption: false,                  // Signing-only key (principle of least privilege)
-  ),
-);
-```
-
-**Signature Creation (Login / Transaction Verification):**
-
-```dart
-final SignatureResult result = await _biometricSignature.createSignature(
-  payload: challenge,                        // Dynamic timestamp-based challenge
-  promptMessage: 'Authenticate to sign in',
-  keyFormat: KeyFormat.pem,
-);
-```
-
-**Security Properties:**
-- Private key **never leaves** the Secure Enclave / StrongBox hardware module
-- Each `createSignature()` call requires live biometric authentication — no caching
-- `biometricKeyExists(checkValidity: true)` verifies the key hasn't been invalidated by biometric enrollment changes
-- ECDSA signatures are compact (≈72 bytes) vs RSA (256+ bytes), reducing network overhead
-- The public key is stored in Firestore for future backend verification via Firebase Cloud Functions
-
-**Key Lifecycle Management:**
-- Keys are created during registration and re-created during email/password login (re-enrollment)
-- Keys persist across logout sessions to enable seamless biometric re-login
-- Keys are automatically invalidated by the OS if the user changes their biometric enrollment (e.g., adds a new fingerprint)
-
-### Consequences
-
-- Requires `minSdkVersion >= 23` on Android (BiometricPrompt API)
-- iOS requires `NSFaceIDUsageDescription` in `Info.plist`
-- Future enhancement: Verify signatures server-side via Firebase Cloud Functions using the stored public key
-
-### References
-
-- [biometric_signature on pub.dev](https://pub.dev/packages/biometric_signature)
-- [biometric_signature API docs](https://pub.dev/documentation/biometric_signature/latest)
-- [Android BiometricPrompt](https://developer.android.com/reference/android/hardware/biometrics/BiometricPrompt)
-- [Apple Secure Enclave](https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web)
+Each box is opened with `HiveAesCipher(key)` where `key` is a 32-byte AES key stored in Flutter Secure Storage (see section 5).
 
 ---
 
-## ADR-002 — Credential Encryption: AES-256-CBC via `encrypt`
-
-### Context
-
-For biometric login, the user's Firebase credentials (email + password) must be stored locally so that after biometric verification, the app can perform `FirebaseAuth.signInWithEmailAndPassword()`. Storing plaintext credentials is unacceptable.
+## 4. Encryption at Rest — AES-256 via HiveAesCipher
 
 ### Decision
 
-**Use the `encrypt` package (v5.0.3)** with AES-256-CBC mode.
+Encrypt all local Hive boxes using **AES-256** via Hive's built-in `HiveAesCipher`.
+
+### Context
+
+The assessment explicitly requires: *"Local data encrypted; keys/sensitive data in hardware-backed storage"*.
 
 ### Implementation
 
-```dart
-// 1. Generate cryptographically secure random key (32 bytes) and IV (16 bytes)
-final List<int> rawKey = Random.secure() → 32 bytes;
-final List<int> rawIv  = Random.secure() → 16 bytes;
-
-// 2. Encrypt the password
-final Encrypter encrypter = Encrypter(AES(key));
-final String ciphertext = encrypter.encrypt(password, iv: iv).base64;
-
-// 3. Store key, IV, and ciphertext separately in flutter_secure_storage
+```
+┌─────────────────────────────────────────────┐
+│              HiveDatabaseClient              │
+│                                              │
+│  init()                                      │
+│    ├─ Hive.initFlutter()                     │
+│    ├─ Hive.registerAdapters()                │
+│    └─ _ensureEncryptedBoxOpen<T>(tableName)  │
+│         ├─ Read AES key from SecureStorage   │
+│         ├─ If null → generate 32-byte key    │
+│         │          → save to SecureStorage    │
+│         └─ Hive.openBox<T>(                  │
+│              tableName,                      │
+│              encryptionCipher: HiveAesCipher  │
+│            )                                 │
+└─────────────────────────────────────────────┘
 ```
 
-**Why AES-256-CBC:**
-- **256-bit key** — NIST approved, resistant to brute-force even with quantum computing advances
-- **CBC mode** — standard for data-at-rest encryption; each block depends on the previous one
-- **Random IV per encryption** — prevents identical plaintext from producing identical ciphertext
-- The AES key itself is stored in `flutter_secure_storage` (hardware-backed — see ADR-003)
+### Key Details
 
-### Threat Mitigation
+- **Algorithm:** AES-256 (256-bit key = 32 bytes).
+- **Key generation:** `Hive.generateSecureKey()` produces a cryptographically random 32-byte list.
+- **Key storage:** The AES key is **never** stored inside Hive. It lives in `flutter_secure_storage` which delegates to Android Keystore / iOS Keychain (see section 5).
+- **Key lifecycle:** Generated on first app launch after login. Deleted on logout (`SecureStorageService.deleteHiveEncryptionKey()`), which means the encrypted boxes become unreadable — effectively a secure wipe.
 
-| Threat | Mitigation |
+### Rationale
+
+- **Zero additional dependencies:** `HiveAesCipher` is built into Hive CE. No native plugins needed for encryption.
+- **Transparent:** All CRUD operations (`put`, `get`, `delete`) work identically whether the box is encrypted or not. Encryption is applied at the box level, not per-field.
+- **Standard algorithm:** AES-256 is an industry-standard symmetric cipher used in banking and government applications.
+
+### Alternatives Considered
+
+| Alternative | Why Not |
 |---|---|
-| Key extracted from device | Key is in hardware-backed Keystore/Keychain (see ADR-003) |
-| Ciphertext extracted | Useless without the AES key |
-| IV reuse | Fresh random IV generated for every `storeCredentials()` call |
-| Brute-force | 2^256 key space makes this computationally infeasible |
-
-### Consequences
-
-- Credential re-encryption happens on every login re-enrollment (fresh key + IV each time)
-- Decryption requires the device's hardware-backed secure storage to be intact
+| SQLCipher (SQLite encryption) | Adds a native dependency (~3MB), requires separate build config per platform. Hive's built-in cipher is simpler. |
+| Manual field-level encryption | Error-prone, must encrypt/decrypt every field manually. Box-level encryption is more robust. |
+| `encrypt` package for Hive data | Unnecessary overhead; Hive already provides box-level AES. We use `encrypt` only for biometric credential encryption (different use case). |
 
 ---
 
-## ADR-003 — Secure Key Storage: `flutter_secure_storage`
-
-### Context
-
-Multiple secrets need device-level storage:
-- AES-256 encryption key (for password encryption)
-- AES IV
-- Encrypted password ciphertext
-- Biometric enrollment flag
-- Hive database encryption key
+## 5. Key Management — Flutter Secure Storage
 
 ### Decision
 
-**Use `flutter_secure_storage` (v10.0.0)** for all secret storage.
+Use **`flutter_secure_storage`** for all sensitive key material (Hive encryption key, biometric AES key/IV, encrypted passwords).
 
-### Security Properties
+### Context
 
-| Platform | Backing Storage | Hardware Protection |
-|---|---|---|
-| **Android** | EncryptedSharedPreferences (AES-256-GCM) → backed by Android Keystore | Yes — StrongBox if available |
-| **iOS** | Keychain Services | Yes — Secure Enclave on A7+ chips |
+The assessment requires: *"Keys/sensitive data in hardware-backed storage"*. The Hive encryption key must not reside in plaintext anywhere on disk.
 
-**Why not Hive / SharedPreferences:**
-- `SharedPreferences` stores data in plaintext XML on Android — trivially readable on rooted devices
-- `Hive` boxes, even encrypted ones, need a key — that key must be stored somewhere hardware-backed
-- `flutter_secure_storage` is the only Flutter option that leverages **hardware-backed key storage** on both platforms
+### Implementation
 
-### Data Stored
+```
+┌──────────────────────────────┐
+│     SecureStorageService      │
+│  (flutter_secure_storage)    │
+│                              │
+│  Android: EncryptedSharedPref│
+│    → backed by Android       │
+│      Keystore (hardware TEE) │
+│                              │
+│  iOS: Keychain Services      │
+│    → backed by Secure Enclave│
+│                              │
+│  Stored keys:                │
+│  ├─ hive_encryption_key      │  ← 32-byte AES key for Hive boxes
+│  ├─ BIOMETRIC-AES-KEY        │  ← 32-byte key for password encryption
+│  ├─ BIOMETRIC-AES-IV         │  ← 16-byte IV for AES-CBC
+│  ├─ BIOMETRIC-ENCRYPTED-PWD  │  ← Encrypted user password
+│  ├─ BIOMETRIC-USER-EMAIL     │  ← User email (for biometric login)
+│  └─ BIOMETRIC-ENROLLED       │  ← Boolean flag
+└──────────────────────────────┘
+```
+
+### Rationale
+
+- **Hardware-backed on Android:** With `AndroidOptions(encryptedSharedPreferences: true)`, the data is encrypted using Android's `EncryptedSharedPreferences`, which is backed by the hardware Keystore (TEE/StrongBox where available).
+- **Keychain on iOS:** Data stored in the iOS Keychain is encrypted by the Secure Enclave and protected by the device passcode/biometric.
+- **No rooted-device plaintext:** Even if the device is rooted/jailbroken, the keys are hardware-protected and cannot be extracted without the user's biometric or passcode.
+- **Platform abstraction:** `flutter_secure_storage` provides a unified API across both platforms.
+
+### What Gets Stored
 
 | Key | Value | Purpose |
 |---|---|---|
-| `biometric_aes_key` | Base64-encoded 32-byte key | Decrypt user password |
-| `biometric_aes_iv` | Base64-encoded 16-byte IV | CBC initialisation vector |
-| `biometric_encrypted_password` | Base64-encoded AES ciphertext | Encrypted Firebase password |
-| `biometric_email` | Plaintext email | Firebase Auth login |
-| `biometric_enrolled` | `"true"` / absent | Controls biometric login availability |
-| `hive_encryption_key` | 32-byte key | Encrypt all Hive database boxes |
+| `hive_encryption_key` | Base64-encoded 32-byte list | Decrypts all Hive boxes |
+| `BIOMETRIC-AES-KEY` | Base64 32-byte key | Encrypts/decrypts the user's password for biometric login |
+| `BIOMETRIC-AES-IV` | Base64 16-byte IV | Initialization vector for AES-CBC |
+| `BIOMETRIC-ENCRYPTED-PASSWORD` | Base64 ciphertext | The user's password, encrypted with AES-256-CBC |
+| `BIOMETRIC-USER-EMAIL` | Plaintext email | Used to auto-fill email during biometric login |
+| `BIOMETRIC-ENROLLED` | `"true"` / absent | Whether the user has enrolled biometric login |
+
+### Alternatives Considered
+
+| Alternative | Why Not |
+|---|---|
+| Store key in Hive itself | Circular dependency — the key that decrypts Hive can't be stored inside Hive. |
+| Hardcoded key | Trivially extractable from the APK binary. Completely insecure. |
+| `shared_preferences` | Not encrypted, stored as plaintext XML on Android. |
+| Custom native plugin | Unnecessary; `flutter_secure_storage` already wraps Keystore/Keychain with a well-tested API. |
 
 ---
 
-## ADR-004 — Local Database: Hive CE with AES Encryption at Rest
-
-### Context
-
-The assessment requires:
-> *"The database file itself must be Encrypted at rest so that data remains unreadable even if extracted from a rooted device."*
+## 6. Biometric Authentication — Hardware-Backed Keys
 
 ### Decision
 
-**Use Hive CE (v2.13.2)** with `HiveAesCipher` for **all** local data boxes.
+Use **`biometric_signature`** for hardware-backed ECDSA key generation and **AES-256-CBC** (via the `encrypt` package) for encrypting the user's password at rest.
+
+### Context
+
+The assessment requires biometric login for returning users. The challenge: Firebase Auth requires an email + password. We must securely store the password so it can be retrieved after biometric verification without exposing it in plaintext.
+
+### Implementation Flow
+
+**Enrollment (after first login/register):**
+
+```
+1. User enters email + password → Firebase Auth succeeds
+2. Prompt: "Register biometric for secure login?"
+3. If yes:
+   a. Generate hardware-backed ECDSA key pair (biometric_signature)
+   b. Generate random AES-256 key (32 bytes) + IV (16 bytes)
+   c. Encrypt(password, AES-key, IV) → ciphertext
+   d. Store in flutter_secure_storage:
+      - AES key, IV, ciphertext, email, enrolled=true
+   e. Store public key in Firestore user doc (for future server-side verification)
+4. Biometric is now enrolled for this device
+```
+
+**Biometric Login (returning user):**
+
+```
+1. User taps "Sign in with Biometric"
+2. BiometricAuthService.authenticate() → OS biometric prompt
+3. If biometric verified:
+   a. Read email, AES key, IV, ciphertext from secure storage
+   b. Decrypt(ciphertext, AES-key, IV) → password
+   c. FirebaseAuth.signInWithEmailAndPassword(email, password)
+4. User is logged in
+```
+
+### Rationale
+
+- **No password in plaintext:** The password is AES-256-CBC encrypted. The AES key lives in hardware-backed secure storage.
+- **Device binding:** The `DeviceIdService` captures Android `fingerprint` or iOS `identifierForVendor`. This ID is stored in Firestore so the server can verify which device is enrolled.
+- **Hardware-backed biometric:** `biometric_signature` generates keys that are invalidated if biometric enrollment changes on the device (e.g., a new fingerprint is added), preventing unauthorized access.
+
+### Alternatives Considered
+
+| Alternative | Why Not |
+|---|---|
+| Store password in plaintext in SecureStorage | SecureStorage is secure, but AES encryption adds a second layer in case SecureStorage is compromised. |
+| Firebase custom token via biometric challenge | Requires a backend Cloud Function to mint custom tokens. Adds infrastructure complexity for a mobile-only assessment. |
+| `local_auth` (simple biometric) | Only provides a boolean gate (authenticated/not). Doesn't provide cryptographic keys. `biometric_signature` provides hardware-backed ECDSA keys for true cryptographic authentication. |
+
+---
+
+## 7. Network & Performance — Isolates
+
+### Decision
+
+Use Dart **Isolates** (`compute()`) for JSON parsing of the ~10,000-item branches dataset and for computing the nearest-50 branches via Haversine distance.
+
+### Context
+
+The assessment requires: *"Background work: parsing/filtering in isolate so UI stays smooth (60fps)"*. The branches JSON is ~2MB with ~10,000 items.
 
 ### Implementation
 
-```dart
-// Generate or retrieve encryption key from flutter_secure_storage (hardware-backed)
-List<int> key = await _secureStorage.readHiveEncryptionKey();
-if (key == null || key.length != 32) {
-  key = Hive.generateSecureKey(); // 32 random bytes
-  await _secureStorage.writeHiveEncryptionKey(key);
-}
+**1. JSON Parsing in Isolate:**
 
-// Open box with AES-256 encryption
-await Hive.openBox<BranchesResponseModel>(
-  'branches',
-  encryptionCipher: HiveAesCipher(key),
+```dart
+// In BranchesRemoteDataSource
+final String raw = response.data as String;  // Plain text response
+final List<BranchesResponseModel> branches = await compute(_parseBranches, raw);
+
+// Top-level function (required for compute/isolate)
+List<BranchesResponseModel> _parseBranches(String raw) {
+  final List<dynamic> jsonList = jsonDecode(raw) as List<dynamic>;
+  return jsonList
+      .map((dynamic e) => BranchesResponseModel.fromJson(e as Map<String, dynamic>))
+      .toList();
+}
+```
+
+**2. Nearest-50 Filter in Isolate:**
+
+```dart
+// In BranchesCubit
+final FilteredBranchesResult filtered = await compute(
+  _filterBranchesInIsolate,
+  _FilterPayload(branches: allBranches, userLat: lat, userLng: lng, nearestCount: 50),
 );
-```
 
-**Encrypted Boxes:**
-
-| Box | Type ID | Contents | Encrypted |
-|---|---|---|---|
-| `userData` | 1 | User profile (name, email, uid, biometric keys) | ✅ AES-256 |
-| `branches` | 2 | 10,000+ branch/ATM records | ✅ AES-256 |
-
-**Why Hive CE over alternatives:**
-
-| Feature | Hive CE | sqflite + SQLCipher | ObjectBox |
-|---|---|---|---|
-| Encryption at rest | ✅ HiveAesCipher | ✅ (separate package) | ❌ Community edition |
-| No native dependencies | ✅ Pure Dart | ❌ Requires native SQLite | ❌ Requires native libs |
-| Freezed/code-gen support | ✅ `hive_ce_generator` | Manual mapping | Separate annotations |
-| Performance (10k records) | Excellent | Good | Excellent |
-| Flutter Desktop support | ✅ | ⚠️ Limited | ✅ |
-
-**Key Security Properties:**
-- The AES encryption key is stored in `flutter_secure_storage` (hardware-backed)
-- Even if the device is rooted and the Hive `.hive` file is extracted, the data is AES-256 encrypted
-- Key is 256-bit, generated via `Hive.generateSecureKey()` which uses `dart:math.Random.secure()`
-
-### Consequences
-
-- Slightly slower box open time due to encryption/decryption overhead (~10-20ms for 10k records)
-- If the user clears app data, the encryption key in Keystore/Keychain is lost → database becomes unreadable (desired behavior for security)
-
----
-
-## ADR-005 — Background Concurrency: Dart Isolates via `compute()`
-
-### Context
-
-The assessment requires:
-> *"The data parsing and filtering process must be offloaded to a Background Thread/Isolate. The loading indicator must remain perfectly smooth."*
-
-The dataset contains **10,000+ branch/ATM records** in JSON format.
-
-### Decision
-
-Use Flutter's built-in **`compute()` function** (which spawns a Dart Isolate) for:
-
-1. **JSON parsing** of the 10,000-record dataset
-2. **Distance calculation** (Haversine formula) for all branches from user location
-
-### Implementation
-
-**JSON Parsing (Remote Data Source):**
-
-```dart
-// Top-level function (required for compute())
-List<BranchesResponseModel> _parseBranches(String rawJson) {
-  final List<dynamic> list = jsonDecode(rawJson) as List<dynamic>;
-  return list.map((e) => BranchesResponseModel.fromJson(e)).toList();
-}
-
-// Called from the remote data source
-final List<BranchesResponseModel> branches = await compute(_parseBranches, rawJsonString);
-```
-
-**Distance Sorting (BranchesCubit):**
-
-```dart
-// Top-level function — runs in isolate
-List<BranchWithDistance> _sortBranchesByDistance(_SortPayload payload) {
-  final List<BranchWithDistance> withDistance = [];
-  for (final branch in payload.branches) {
-    final double km = _haversineKm(payload.userLat, payload.userLng, branch.lat, branch.lng);
-    withDistance.add(BranchWithDistance(branch: branch, distanceKm: km));
-  }
-  withDistance.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
-  return withDistance;
+// Top-level function
+FilteredBranchesResult _filterBranchesInIsolate(_FilterPayload payload) {
+  // Compute Haversine distance for each branch
+  // Sort by distance
+  // Return top 50 as "nearest" and the rest as "others"
 }
 ```
 
-**Why `compute()` over `Isolate.spawn()`:**
-- Simpler API for one-shot computations (send data → get result)
-- Handles Isolate lifecycle automatically
-- Sufficient for our use case (no bidirectional streaming needed)
-- Works seamlessly with Flutter's `foundation` library (no extra dependencies)
+### Rationale
+
+- **UI thread stays free:** `compute()` spawns a new isolate, runs the function, and returns the result. The main thread is never blocked.
+- **Simple API:** `compute()` handles isolate lifecycle (spawn, send, receive, kill) automatically. No manual isolate management needed.
+- **Top-level functions:** Dart requires the function passed to `compute()` to be top-level (not a closure or instance method), which enforces a clean separation between the parsing logic and the class state.
+- **Chunked caching:** After parsing, branches are saved to Hive in chunks of 5,000 with `Future.delayed(Duration.zero)` between chunks to yield to the event loop.
 
 ### Performance Impact
 
-| Operation | Main Thread | Isolate | UI Impact |
-|---|---|---|---|
-| Parse 10k JSON records | ~800ms (jank) | ~800ms (zero jank) | 60 fps maintained ✅ |
-| Calculate 10k distances | ~50ms (minor) | ~50ms (zero risk) | 60 fps maintained ✅ |
-| Shimmer loading animation | — | — | Perfectly smooth ✅ |
-
----
-
-## ADR-006 — Location & Nearest-50 Filtering: `geolocator` + Haversine
-
-### Context
-
-The assessment requires:
-> *"Display only the nearest 50 locations from the filtered results to ensure optimal rendering performance."*
-
-### Decision
-
-1. **Use `geolocator` (v14.0.2)** for obtaining user GPS coordinates
-2. **Use Haversine formula** for great-circle distance calculation (run in isolate)
-3. **Display nearest 50** highlighted, then the remaining branches below
-
-### Why `geolocator`
-
-| Feature | `geolocator` | `location` | `gps` |
-|---|---|---|---|
-| Pub score | 160 (highest) | 130 | 80 |
-| Platform support | Android, iOS, Web, macOS, Linux, Windows | Android, iOS, Web, macOS | Android, iOS |
-| Permission handling | Built-in | Separate package needed | Manual |
-| Accuracy control | Fine (GPS) / Coarse (Network) | Fine / Coarse | Fine only |
-| Active maintenance | ✅ Baseflow team | ⚠️ Less frequent | ⚠️ |
-
-### Haversine Formula
-
-The Haversine formula computes the great-circle distance between two points on a sphere (Earth) given their latitudes and longitudes:
-
-```
-a = sin²(Δlat/2) + cos(lat1) · cos(lat2) · sin²(Δlon/2)
-c = 2 · atan2(√a, √(1−a))
-d = R · c    where R = 6371 km
-```
-
-**Why Haversine over `Geolocator.distanceBetween()`:**
-- `distanceBetween()` is a static method that works on the main thread
-- Our Haversine implementation runs inside the isolate alongside the sorting logic
-- Avoids 10,000 platform channel calls (one per branch) which would be slow and block the main thread
-
-### Nearest-50 UX Design
-
-| Section | Visual Treatment | Purpose |
+| Operation | Without Isolate | With Isolate |
 |---|---|---|
-| **Nearest 50** | Green accent border, rank badge (#1–#50), distance chip, accent "Navigate" button | Highlights closest branches |
-| **All Others** | Standard card design, no distance info | Shows remaining data |
-| **No Location** | Warning banner + all branches unsorted | Graceful degradation |
+| Parse ~10,000 items | ~300-500ms UI jank | 0ms UI jank (runs in background) |
+| Haversine for ~10,000 items | ~100-200ms UI jank | 0ms UI jank |
+| Total user-perceived delay | Visible stutter | Smooth loading indicator |
 
-### Privacy
+### Alternatives Considered
 
-- User location is computed **locally on-device only**
-- GPS coordinates are **never transmitted** to any server or stored in any database
-- Location is used solely for client-side distance calculation
+| Alternative | Why Not |
+|---|---|
+| `jsonDecode` on main thread | 10,000 items would cause noticeable jank (dropped frames). |
+| `Isolate.spawn` (manual) | More control but more boilerplate. `compute()` is sufficient for fire-and-forget parsing. |
+| Background service (`workmanager`) | Overkill for one-shot parsing. Designed for periodic background tasks. |
 
 ---
 
-## ADR-007 — Cloud Security: Firebase Security Rules
-
-### Context
-
-The assessment requires:
-> *"Ensure that the current user cannot read or write another user's data via the API."*
+## 8. Offline-First Data Strategy
 
 ### Decision
 
-Implement **strict Firestore Security Rules** that enforce per-user data isolation.
+Implement an **offline-first, remote-wins** sync strategy for both branches and favorites.
 
-### Rules
+### Context
+
+The assessment requires: *"Persist branch/ATM data; sync Favorite Branches with Firebase"*.
+
+### Strategy
+
+```
+┌──────────────────────────────────────────────────┐
+│                  READ FLOW                        │
+│                                                  │
+│  1. Read from local cache (instant, offline-safe)│
+│  2. Emit cached data → UI renders immediately    │
+│  3. Fetch from remote in background              │
+│  4. If remote succeeds:                          │
+│     a. Replace local cache with remote data      │
+│     b. Emit fresh data → UI updates              │
+│  5. If remote fails:                             │
+│     a. Keep showing cached data                  │
+│     b. Log error for debugging                   │
+└──────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│               WRITE FLOW (Favorites)              │
+│                                                  │
+│  1. Optimistic local write (instant UI update)   │
+│  2. Fire remote write in background              │
+│  3. If remote fails:                             │
+│     a. Local data persists                       │
+│     b. Will sync on next loadFavorites() call    │
+│     c. Remote-wins on next sync                  │
+└──────────────────────────────────────────────────┘
+```
+
+### Branches Sync
+
+- **Direction:** Remote → Local (one-way). Branch data is read-only.
+- **Conflict resolution:** Remote always wins. Local cache is cleared and replaced on each successful fetch.
+- **Chunked writes:** 5,000 items per batch to avoid blocking the event loop.
+
+### Favorites Sync
+
+- **Direction:** Bidirectional (local ↔ remote).
+- **Conflict resolution:** Remote wins. On `syncFavorites()`, the remote list replaces the local cache entirely.
+- **Optimistic writes:** `addFavorite()` and `removeFavorite()` update local first for instant UI feedback, then write to Firestore in the background.
+- **Failure handling:** If remote write fails, the local state is preserved. On the next `loadFavorites()`, remote data syncs down and reconciles.
+
+### Rationale
+
+- **Instant UI:** Users see data immediately from cache, even offline.
+- **Simplicity:** Remote-wins avoids complex merge logic. For a single-user, single-device scenario, this is sufficient and easy to reason about.
+- **Graceful degradation:** Full offline support — the app is usable without internet after the initial data fetch.
+
+---
+
+## 9. Firebase Security Rules
+
+### Decision
+
+Use **per-user Firestore security rules** with a subcollection pattern for favorites.
+
+### Implementation
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users: doc ID must equal authenticated user's UID
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    // Favorites: each document must contain a userId field matching auth UID
-    match /favorites/{favId} {
-      allow read, create: if request.auth != null
-                          && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if request.auth != null
-                            && resource.data.userId == request.auth.uid;
+
+      match /favorites/{branchId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }
 ```
 
-**Security Properties:**
-- **No admin/wildcard rules** — every document is scoped to the authenticated user
-- **Document ID = UID** pattern for user data — prevents horizontal privilege escalation
-- **Resource-based rules** for favorites — validates the `userId` field in the document itself
-- Unauthenticated requests are rejected at the Firestore layer (before any data is read)
+### Data Model
 
-### Data Architecture (Document ID = UID)
-
-```dart
-// When storing user data, we use the Firebase UID as the document ID
-await _firestore.collection('users').doc(uid).set(userData);
-
-// This guarantees the rule `request.auth.uid == userId` always matches
 ```
+Firestore
+├── users/
+│   └── {userId}/                          ← doc ID = Firebase Auth UID
+│       ├── email, name, deviceId, ...     ← user profile fields
+│       └── favorites/                     ← subcollection
+│           └── {branchId}/                ← doc ID = branch ID
+│               ├── name, address, lat, lng, ...
+```
+
+### Rationale
+
+- **Subcollection approach:** Favorites live under `users/{uid}/favorites/` instead of a top-level `favorites` collection. This makes the security rule simpler — the parent wildcard `{userId}` is reused for the subcollection match.
+- **UID-based document IDs:** User documents use Firebase Auth UID as the document ID (`_client.collection('users').doc(uid)`). This eliminates queries and makes security rules trivial.
+- **No admin access:** There are no wildcard rules that allow any authenticated user to read all data. Each user is strictly sandboxed.
 
 ---
 
-## ADR-008 — State Management: `flutter_bloc`
+## 10. State Management — BLoC / Cubit
 
 ### Decision
 
-**Use `flutter_bloc` (v9.0.0)** with Cubit pattern for all feature state management.
+Use **Cubit** (from `flutter_bloc`) as the primary state management solution.
 
-### Justification
+### Context
 
-- **Testability**: Cubits are plain Dart classes — easy to unit test with `bloc_test`
-- **Separation of concerns**: UI emits events → Cubit processes → emits states → UI rebuilds
-- **Traceability**: `BlocObserver` logs every state transition (useful for debugging biometric flows)
-- **Granular rebuilds**: `BlocBuilder` with `buildWhen` prevents unnecessary widget rebuilds
+Each feature requires reactive state (loading, loaded, error) with async data flows (network + cache).
 
-### Cubit Architecture
+### Rationale
 
-| Cubit | Responsibility |
-|---|---|
-| `RegisterCubit` | Sign-up + biometric enrollment |
-| `LoginCubit` | Email/password login + biometric re-enrollment |
-| `BiometricLoginCubit` | Biometric-only login flow |
-| `BranchesCubit` | Fetch, cache, sort branches + nearest 50 |
-| `AddTransactionCubit` | Create transaction with biometric verification |
-| `TransactionsBloc` | List/paginate user transactions |
+- **Predictable state:** `emit()` produces a new immutable state. `BlocBuilder` rebuilds only when state changes (via `Equatable`).
+- **Testable:** Cubits can be unit-tested by verifying emitted state sequences.
+- **Separation:** Business logic lives in the Cubit, not in widgets. Widgets are pure UI.
+- **Cubit over BLoC:** Cubit is simpler (function calls vs. event classes). The app's use cases (fetch, toggle, login) don't benefit from the event-driven BLoC pattern's added complexity.
 
----
+### State Pattern
 
-## Architecture Overview
+All states follow a consistent pattern using a `GenericStateStatus` enum:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    PRESENTATION LAYER                        │
-│  Screens → Widgets → BlocBuilder/BlocListener               │
-├─────────────────────────────────────────────────────────────┤
-│                    STATE MANAGEMENT                          │
-│  Cubits / Blocs (flutter_bloc)                               │
-├─────────────────────────────────────────────────────────────┤
-│                    DOMAIN / REPOSITORY LAYER                 │
-│  Repositories (coordinate remote ↔ local, error handling)    │
-├──────────────────┬──────────────────────────────────────────┤
-│  REMOTE SOURCES  │  LOCAL SOURCES                            │
-│  Firebase Auth   │  Hive CE (AES-256 encrypted)              │
-│  Firestore       │  flutter_secure_storage (hardware-backed) │
-│  REST API (Dio)  │  biometric_signature (Secure Enclave)     │
-├──────────────────┴──────────────────────────────────────────┤
-│                    CORE SERVICES                             │
-│  BiometricAuthService → biometric_signature wrapper          │
-│  BiometricCryptoService → AES-256 encrypt/decrypt            │
-│  DeviceIdService → Unique device identification              │
-│  SecureStorageService → flutter_secure_storage wrapper        │
-└─────────────────────────────────────────────────────────────┘
+```dart
+enum GenericStateStatus { initial, loading, loaded, error, changeUi, validationError }
+
+class FeatureState extends Equatable {
+  final GenericStateStatus status;
+  final String? errorMsg;
+  final List<Model>? data;
+  // ... copyWith, props
+}
 ```
 
 ---
 
-## Security Threat Model
+## 11. Dependency Injection — GetIt + Injectable
 
-| Threat | Control | Layer |
+### Decision
+
+Use **GetIt** as the service locator with **Injectable** for compile-time code generation.
+
+### Rationale
+
+- **Compile-time safety:** `injectable` generates registration code at build time. Missing registrations surface as build errors, not runtime crashes.
+- **Lazy singletons:** Services like `SecureStorageService`, `BaseDatabase`, and repositories are `@lazySingleton` — created once on first access and shared across the app.
+- **Module registration:** Firebase services (`FirebaseAuth`, `FirebaseFirestore`) and `Dio` are registered via `@module` in `RegisterModule`, keeping third-party initialization centralized.
+
+---
+
+## 12. Navigation — GoRouter with Auth Guards
+
+### Decision
+
+Use **GoRouter** with `StatefulShellRoute` for tab-based navigation and `AuthStateNotifier` for reactive auth redirects.
+
+### Implementation
+
+- **Auth guard:** `redirect` callback checks `AuthStateNotifier.currentUser`. Unauthenticated users are sent to `/login`; authenticated users on `/login` are sent to `/home`.
+- **Reactive refresh:** `refreshListenable: _authNotifier` triggers route re-evaluation whenever Firebase auth state changes (login, logout, token expiry).
+- **Tab persistence:** `StatefulShellBranch` maintains separate navigator stacks for Home, Branches, and Favorites tabs.
+
+### Rationale
+
+- **Declarative:** Routes are defined as data, not imperative `Navigator.push` calls.
+- **Deep linking ready:** GoRouter supports URL-based navigation for future web support.
+- **Auth-aware:** The `redirect` + `refreshListenable` pattern ensures no widget tree can exist in an unauthenticated state.
+
+---
+
+## 13. Summary of Key Decisions
+
+| Decision | Choice | Key Reason |
 |---|---|---|
-| **Credential theft (rooted device)** | AES-256 encrypted password; key in hardware-backed Keystore | Device |
-| **Database extraction** | All Hive boxes encrypted with HiveAesCipher (AES-256) | Device |
-| **Biometric spoofing** | Hardware-backed ECDSA signatures; `enforceBiometric: true` disables PIN fallback | Device |
-| **Replay attack** | Dynamic timestamp-based challenge for each signature | Protocol |
-| **Biometric enrollment change** | `setInvalidatedByBiometricEnrollment: true` auto-revokes keys | Device |
-| **Cross-user data access** | Firestore Security Rules enforce `auth.uid == userId` | Server |
-| **Man-in-the-middle** | Firebase SDK uses TLS/SSL; Dio enforces HTTPS | Network |
-| **UI thread freezing** | JSON parsing + distance sorting in Dart Isolates | Performance |
-| **Sensitive data in logs** | `AppLogger` never logs passwords, keys, or signatures | Application |
+| **Local DB** | Hive CE | Built-in AES encryption, pure Dart, NoSQL fits flat branch data |
+| **Encryption** | AES-256 (HiveAesCipher) | Industry-standard, zero extra dependencies, box-level encryption |
+| **Key Storage** | flutter_secure_storage | Hardware-backed (Android Keystore / iOS Keychain), platform-abstracted |
+| **Biometric** | biometric_signature + AES-CBC | Hardware ECDSA keys, encrypted password storage, device binding |
+| **Network Parsing** | Dart Isolates (compute) | Offloads ~10K JSON parsing to background, keeps UI at 60fps |
+| **State Management** | Cubit (flutter_bloc) | Predictable, testable, simpler than full BLoC for this scope |
+| **Sync Strategy** | Offline-first, remote-wins | Instant UI from cache, simple conflict resolution |
+| **Firebase Rules** | Per-user subcollection | UID-based access, no cross-user data leakage |
+| **DI** | GetIt + Injectable | Compile-time safety, lazy singletons, modular registration |
+| **Navigation** | GoRouter + AuthStateNotifier | Declarative routing, reactive auth guards, tab persistence |
+| **Architecture** | Feature-based clean architecture | Separation of concerns, scalable, testable |
 
 ---
 
-## Packages Summary
+## Appendix: Security Threat Model
 
-| Package | Version | Purpose | Security Relevance |
-|---|---|---|---|
-| `biometric_signature` | 9.0.3 | Hardware-backed biometric cryptographic signatures | 🔴 Critical |
-| `flutter_secure_storage` | 10.0.0 | Hardware-backed secret storage (Keystore/Keychain) | 🔴 Critical |
-| `encrypt` | 5.0.3 | AES-256-CBC password encryption | 🔴 Critical |
-| `hive_ce` / `hive_ce_flutter` | 2.13.2 / 2.3.2 | Encrypted local database | 🔴 Critical |
-| `firebase_auth` | 6.0.2 | User authentication | 🔴 Critical |
-| `cloud_firestore` | 6.0.1 | Cloud database with security rules | 🔴 Critical |
-| `geolocator` | 14.0.2 | GPS location for nearest branch calculation | 🟡 Feature |
-| `flutter_bloc` | 9.0.0 | State management | 🟢 Architecture |
-| `dio` | 5.3.3 | HTTP client for branch data fetching | 🟢 Architecture |
-| `device_info_plus` | 12.1.0 | Device ID for biometric enrollment binding | 🟡 Feature |
-
----
-
-*Last updated: February 2026*
-
+| Threat | Mitigation |
+|---|---|
+| **Data at rest on stolen device** | All Hive boxes encrypted with AES-256. Key in hardware-backed storage. Unreadable without user's biometric/passcode. |
+| **Man-in-the-middle** | All network traffic over HTTPS. Firebase SDK enforces TLS. |
+| **Weak passwords** | Validators enforce min 8 chars, at least one letter + one number. |
+| **Cross-user data access** | Firestore rules enforce `request.auth.uid == userId`. No wildcard rules. |
+| **Session hijacking** | Firebase Auth tokens are short-lived and auto-refreshed. GoRouter redirect checks auth state on every navigation. |
+| **Biometric spoofing** | `biometric_signature` uses hardware-backed keys that are invalidated if device biometric enrollment changes. |
+| **Key extraction from APK** | No keys are hardcoded. All secrets are in `.env` (gitignored) or generated at runtime and stored in hardware-backed storage. |
+| **Logout data leakage** | Logout clears user data, branches cache, favorites cache from Hive AND deletes the Hive encryption key from secure storage, rendering old encrypted data permanently unreadable. |
