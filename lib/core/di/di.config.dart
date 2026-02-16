@@ -27,6 +27,8 @@ import '../../features/authentication/login/data/repo/get_user_data_repo.dart'
     as _i1058;
 import '../../features/authentication/logout/data/auth_logout_service.dart'
     as _i22;
+import '../../features/authentication/register/presentation/cubits/register_cubit/register_cubit.dart'
+    as _i78;
 import '../../features/authentication/store_user_data/data/data_sources/local_data_source/save_user_data_local_data_source.dart'
     as _i458;
 import '../../features/authentication/store_user_data/data/data_sources/remote_data_source/store_user_data_remote_data_source.dart'
@@ -162,6 +164,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i148.DeviceIdService>(),
         gh<_i1058.GetUserDataRepo>(),
         gh<_i59.FirebaseAuth>(),
+      ),
+    );
+    gh.factory<_i78.RegisterCubit>(
+      () => _i78.RegisterCubit(
+        gh<_i73.StoreUserDataRepo>(),
+        gh<_i59.FirebaseAuth>(),
+        gh<_i148.DeviceIdService>(),
+        gh<_i919.BiometricAuthService>(),
+        gh<_i134.BiometricCryptoService>(),
+        gh<_i10.BiometricLoginRepo>(),
       ),
     );
     return this;

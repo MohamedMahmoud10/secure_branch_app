@@ -102,8 +102,21 @@
   "firebaseAuthFailed": "Firebase authentication failed.",
   "authenticationFailed": "Authentication failed.",
   "unexpectedError": "An unexpected error occurred. Please try again.",
-  "userIdRequired": "User id is required to store user data."
-
+  "userIdRequired": "User id is required to store user data.",
+  "nearestBranches": "Nearest Branches",
+  "nearestBranchesSubtitle": "Top {count} closest to your location",
+  "allBranches": "All Branches",
+  "allBranchesSubtitle": "{count} locations available",
+  "distanceAway": "{distance} km away",
+  "locationPermissionDenied": "Location permission denied. Showing all branches.",
+  "locationServiceDisabled": "Location services are disabled. Please enable them.",
+  "locationPermissionRequired": "Location access is needed to find branches near you.",
+  "fetchingLocation": "Finding your location...",
+  "nearYou": "NEAR YOU",
+  "branch": "Branch",
+  "atm": "ATM",
+  "allLocations": "ALL LOCATIONS",
+  "locationError": "Could not determine your location."
 }
 
 

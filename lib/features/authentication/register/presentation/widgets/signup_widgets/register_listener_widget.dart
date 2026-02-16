@@ -42,7 +42,7 @@ class RegisterListenerWidget extends StatelessWidget {
           if (context.mounted) {
             context.go(RouteNames.home);
           }
-        } else if (state.isBiometricFailed || state.isBiometricUnavailable) {
+        } else if (state.isBiometricUnavailable) {
           ToastManager().warning(
             context: context,
             message: LocaleKeys.biometricSkipped.tr(),

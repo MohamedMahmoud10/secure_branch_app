@@ -49,5 +49,9 @@
 		<false/>
 		<key>NSFaceIDUsageDescription</key>
 		<string>We use Face ID to securely authenticate you with hardware-backed cryptographic keys. Your biometric data never leaves the device.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need your location to find the nearest bank branches and ATMs around you.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>We need your location to find the nearest bank branches and ATMs around you.</string>
 	</dict>
 </plist>

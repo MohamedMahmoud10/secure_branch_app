@@ -15,12 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDataModel {
 
-@HiveField(0) String get email;@HiveField(1) String? get uId;@JsonKey(name: 'doc_id')@HiveField(2) String? get documentId;@DateTimeConverter()@HiveField(3) DateTime? get createdAt;@HiveField(4) String? get name;/// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
-/// Used to associate biometric enrollment with a device in Firestore.
-@JsonKey(name: 'deviceId')@HiveField(5) String? get deviceId;/// The hardware-backed public key (PEM) stored during biometric enrollment.
-/// Used to verify cryptographic signatures produced by the device.
-@JsonKey(name: 'biometricPublicKey')@HiveField(6) String? get biometricPublicKey;/// Whether biometric login has been enabled for this user / device.
-@JsonKey(name: 'biometricEnabled')@HiveField(7) bool get biometricEnabled;
+@HiveField(0) String get email;@HiveField(1) String? get uId;@JsonKey(name: 'doc_id')@HiveField(2) String? get documentId;@DateTimeConverter()@HiveField(3) DateTime? get createdAt;@HiveField(4) String? get name;@JsonKey(name: 'deviceId')@HiveField(5) String? get deviceId;@JsonKey(name: 'biometricPublicKey')@HiveField(6) String? get biometricPublicKey;@JsonKey(name: 'biometricEnabled')@HiveField(7) bool get biometricEnabled;
 /// Create a copy of UserDataModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -229,13 +224,8 @@ class _UserDataModel extends UserDataModel {
 @override@JsonKey(name: 'doc_id')@HiveField(2) final  String? documentId;
 @override@DateTimeConverter()@HiveField(3) final  DateTime? createdAt;
 @override@HiveField(4) final  String? name;
-/// Device identifier (e.g. Android fingerprint, iOS identifierForVendor).
-/// Used to associate biometric enrollment with a device in Firestore.
 @override@JsonKey(name: 'deviceId')@HiveField(5) final  String? deviceId;
-/// The hardware-backed public key (PEM) stored during biometric enrollment.
-/// Used to verify cryptographic signatures produced by the device.
 @override@JsonKey(name: 'biometricPublicKey')@HiveField(6) final  String? biometricPublicKey;
-/// Whether biometric login has been enabled for this user / device.
 @override@JsonKey(name: 'biometricEnabled')@HiveField(7) final  bool biometricEnabled;
 
 /// Create a copy of UserDataModel

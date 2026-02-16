@@ -104,7 +104,20 @@
   "firebaseAuthFailed": "فشل المصادقة مع Firebase.",
   "authenticationFailed": "فشل المصادقة.",
   "unexpectedError": "حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى.",
-  "userIdRequired": "معرف المستخدم مطلوب لتخزين بيانات المستخدم."
-
+  "userIdRequired": "معرف المستخدم مطلوب لتخزين بيانات المستخدم.",
+  "nearestBranches": "أقرب الفروع",
+  "nearestBranchesSubtitle": "أقرب {count} فرع من موقعك",
+  "allBranches": "جميع الفروع",
+  "allBranchesSubtitle": "{count} موقع متاح",
+  "distanceAway": "{distance} كم",
+  "locationPermissionDenied": "تم رفض إذن الموقع. عرض جميع الفروع.",
+  "locationServiceDisabled": "خدمات الموقع معطلة. يرجى تفعيلها.",
+  "locationPermissionRequired": "يلزم الوصول إلى الموقع للعثور على الفروع القريبة منك.",
+  "fetchingLocation": "جارٍ تحديد موقعك...",
+  "nearYou": "بالقرب منك",
+  "branch": "فرع",
+  "atm": "صراف آلي",
+  "allLocations": "جميع المواقع",
+  "locationError": "تعذر تحديد موقعك."
 }
 

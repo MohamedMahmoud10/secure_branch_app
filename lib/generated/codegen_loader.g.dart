@@ -118,7 +118,21 @@ class CodegenLoader extends AssetLoader{
   "firebaseAuthFailed": "Firebase authentication failed.",
   "authenticationFailed": "Authentication failed.",
   "unexpectedError": "An unexpected error occurred. Please try again.",
-  "userIdRequired": "User id is required to store user data."
+  "userIdRequired": "User id is required to store user data.",
+  "nearestBranches": "Nearest Branches",
+  "nearestBranchesSubtitle": "Top {count} closest to your location",
+  "allBranches": "All Branches",
+  "allBranchesSubtitle": "{count} locations available",
+  "distanceAway": "{distance} km away",
+  "locationPermissionDenied": "Location permission denied. Showing all branches.",
+  "locationServiceDisabled": "Location services are disabled. Please enable them.",
+  "locationPermissionRequired": "Location access is needed to find branches near you.",
+  "fetchingLocation": "Finding your location...",
+  "nearYou": "NEAR YOU",
+  "branch": "Branch",
+  "atm": "ATM",
+  "allLocations": "ALL LOCATIONS",
+  "locationError": "Could not determine your location."
 };
 static const Map<String,dynamic> _ar = {
   "pullToRefreshIdleText": "اسحب للأسفل للتحديث",
@@ -224,7 +238,21 @@ static const Map<String,dynamic> _ar = {
   "firebaseAuthFailed": "فشل المصادقة مع Firebase.",
   "authenticationFailed": "فشل المصادقة.",
   "unexpectedError": "حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى.",
-  "userIdRequired": "معرف المستخدم مطلوب لتخزين بيانات المستخدم."
+  "userIdRequired": "معرف المستخدم مطلوب لتخزين بيانات المستخدم.",
+  "nearestBranches": "أقرب الفروع",
+  "nearestBranchesSubtitle": "أقرب {count} فرع من موقعك",
+  "allBranches": "جميع الفروع",
+  "allBranchesSubtitle": "{count} موقع متاح",
+  "distanceAway": "{distance} كم",
+  "locationPermissionDenied": "تم رفض إذن الموقع. عرض جميع الفروع.",
+  "locationServiceDisabled": "خدمات الموقع معطلة. يرجى تفعيلها.",
+  "locationPermissionRequired": "يلزم الوصول إلى الموقع للعثور على الفروع القريبة منك.",
+  "fetchingLocation": "جارٍ تحديد موقعك...",
+  "nearYou": "بالقرب منك",
+  "branch": "فرع",
+  "atm": "صراف آلي",
+  "allLocations": "جميع المواقع",
+  "locationError": "تعذر تحديد موقعك."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": _en, "ar": _ar};
 }

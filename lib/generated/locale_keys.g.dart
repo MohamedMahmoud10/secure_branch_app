@@ -107,5 +107,19 @@ abstract class  LocaleKeys {
   static const authenticationFailed = 'authenticationFailed';
   static const unexpectedError = 'unexpectedError';
   static const userIdRequired = 'userIdRequired';
+  static const nearestBranches = 'nearestBranches';
+  static const nearestBranchesSubtitle = 'nearestBranchesSubtitle';
+  static const allBranches = 'allBranches';
+  static const allBranchesSubtitle = 'allBranchesSubtitle';
+  static const distanceAway = 'distanceAway';
+  static const locationPermissionDenied = 'locationPermissionDenied';
+  static const locationServiceDisabled = 'locationServiceDisabled';
+  static const locationPermissionRequired = 'locationPermissionRequired';
+  static const fetchingLocation = 'fetchingLocation';
+  static const nearYou = 'nearYou';
+  static const branch = 'branch';
+  static const atm = 'atm';
+  static const allLocations = 'allLocations';
+  static const locationError = 'locationError';
 
 }

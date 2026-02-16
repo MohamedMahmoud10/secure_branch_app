@@ -147,6 +147,9 @@ dependencies:
   # Hardware-backed biometric signature for cryptographic authentication
   biometric_signature: ^9.0.3
 
+  #plugin provides a cross-platform (iOS, Android) API for generic location (GPS etc.) functions
+  geolocator: ^14.0.2
+
 dev_dependencies:
 
   # A package which simplifies the task of updating your Flutter app's launcher icon

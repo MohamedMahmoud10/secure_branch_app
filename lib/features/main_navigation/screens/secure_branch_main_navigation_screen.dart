@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
 import 'package:secure_branch_app/config/theme/app_system_ui_overlay_styles.dart';
@@ -36,6 +37,20 @@ class SecureBranchMainNavigationScreen extends StatefulWidget {
 
 class _SecureBranchMainNavigationScreenState
     extends State<SecureBranchMainNavigationScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    _initLocationAndBranches();
+  }
+
+  Future<void> _initLocationAndBranches() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final int currentIndex = widget.navigationShell.currentIndex;
