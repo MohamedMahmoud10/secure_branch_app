@@ -13,6 +13,8 @@ import 'package:secure_branch_app/core/extensions/color_extension.dart';
 import 'package:secure_branch_app/core/services/biometric_auth_service.dart';
 import 'package:secure_branch_app/features/branch/data/repo/branches_repo.dart';
 import 'package:secure_branch_app/features/branch/presentation/cubits/branches_cubit/branches_cubit.dart';
+import 'package:secure_branch_app/features/favorites/data/repo/favorites_repo.dart';
+import 'package:secure_branch_app/features/favorites/presentation/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:secure_branch_app/features/main_navigation/widgets/navigation_bar_icons.dart';
 import 'package:secure_branch_app/features/transactions/data/repo/add_transaction_repo.dart';
 import 'package:secure_branch_app/features/transactions/data/repo/user_transactions_repo.dart';
@@ -74,6 +76,10 @@ class _SecureBranchMainNavigationScreenState
           BlocProvider<BranchesCubit>(
             create: (BuildContext context) => BranchesCubit(di<BranchesRepo>()),
           ),
+          BlocProvider<FavoritesCubit>(
+            create: (BuildContext context) =>
+                FavoritesCubit(di<FavoritesRepo>())..loadFavorites(),
+          ),
           BlocProvider<AddTransactionCubit>(
             create: (BuildContext context) => AddTransactionCubit(
               di<AddTransactionRepo>(),
@@ -117,8 +123,8 @@ class _SecureBranchMainNavigationScreenState
                   onClick: () => goBranch(1),
                 ),
                 NavBarIcon(
-                  icon: AppIcons.shieldIcon,
-                  label: LocaleKeys.vault.tr(),
+                  icon: AppIcons.mingcuteLoveIcon,
+                  label: LocaleKeys.favorite.tr(),
                   active: currentIndex == 2,
                   onClick: () => goBranch(2),
                 ),

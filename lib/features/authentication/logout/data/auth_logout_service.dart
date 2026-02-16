@@ -34,6 +34,9 @@ class AuthLogoutService {
       _db.clear<BranchesResponseModel>(
         tableName: DatabaseConstants.branchesTable,
       ),
+      _db.clear<BranchesResponseModel>(
+        tableName: DatabaseConstants.favoritesTable,
+      ),
     ]);
 
     await _secureStorage.deleteHiveEncryptionKey();

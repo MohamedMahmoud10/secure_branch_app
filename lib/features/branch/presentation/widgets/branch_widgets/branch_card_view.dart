@@ -1,13 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
+import 'package:secure_branch_app/core/assets/app_icons.dart';
 import 'package:secure_branch_app/core/common_widgets/app_static_button.dart';
 import 'package:secure_branch_app/core/common_widgets/toast_manager.dart';
 import 'package:secure_branch_app/core/extensions/color_extension.dart';
 import 'package:secure_branch_app/core/helpers/app_helper_functions.dart';
 import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
 import 'package:secure_branch_app/features/branch/presentation/widgets/branch_widgets/index.dart';
+import 'package:secure_branch_app/features/favorites/presentation/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 
 class BranchCardView extends StatelessWidget {
@@ -48,6 +52,28 @@ class BranchCardView extends StatelessWidget {
                   ),
                 ),
               ),
+              BlocBuilder<FavoritesCubit, FavoritesState>(
+                builder: (BuildContext context, FavoritesState favState) {
+                  final bool isFav = favState.isFavorite(branch.id);
+                  return GestureDetector(
+                    onTap: () =>
+                        context.read<FavoritesCubit>().toggleFavorite(branch),
+                    child: SvgPicture.asset(
+                      isFav
+                          ? AppIcons.mingcuteLoveFillIcon
+                          : AppIcons.mingcuteLoveIcon,
+                    ),
+                    // child: Icon(
+                    //   isFav
+                    //       ? Icons.favorite_rounded
+                    //       : Icons.favorite_border_rounded,
+                    //   color: isFav ? AppColors.error : AppColors.textSecondary,
+                    //   size: 22.sp,
+                    // ),
+                  );
+                },
+              ),
+              SizedBox(width: 8.w),
               BranchStatusIndicator(isActive: branch.isActive ?? false),
             ],
           ),
@@ -80,10 +106,7 @@ class BranchCardView extends StatelessWidget {
           Row(
             children: <Widget>[
               if (branch.workingHours != null)
-                InfoTitle(
-                  icon: Icons.access_time,
-                  text: branch.workingHours!,
-                ),
+                InfoTitle(icon: Icons.access_time, text: branch.workingHours!),
               SizedBox(width: 16.w),
               if (branch.phone != null)
                 InfoTitle(icon: Icons.phone_outlined, text: branch.phone!),

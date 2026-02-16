@@ -11,6 +11,9 @@ class DatabaseConstants {
   static final String userTransactionCollection = dotenv.get(
     AppConstantStrings.transactionCollection,
   );
+  static final String userFavoritesCollection = dotenv.get(
+    AppConstantStrings.favorites,
+  );
 
   ///END REGION OF TABLES OF CACHES DATA ON FIRESTORE DATA BASE
 
@@ -18,6 +21,7 @@ class DatabaseConstants {
 
   static const String userDataTable = 'USER-DATA-TABLE';
   static const String branchesTable = 'BRANCHES-TABLE';
+  static const String favoritesTable = 'FAVORITES-TABLE';
 
   ///END REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 

@@ -22,6 +22,8 @@ mixin _$BranchesResponseModel {
 @pragma('vm:prefer-inline')
 $BranchesResponseModelCopyWith<BranchesResponseModel> get copyWith => _$BranchesResponseModelCopyWithImpl<BranchesResponseModel>(this as BranchesResponseModel, _$identity);
 
+  /// Serializes this BranchesResponseModel to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -213,7 +215,7 @@ return $default(_that.id,_that.name,_that.type,_that.address,_that.lat,_that.lng
 }
 
 /// @nodoc
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 @HiveType(typeId: 2, adapterName: 'BranchesAdapter')
 class _BranchesResponseModel extends BranchesResponseModel {
    _BranchesResponseModel({@HiveField(0) required this.id, @HiveField(1) this.name, @HiveField(2) this.type, @HiveField(3) this.address, @HiveField(4) this.lat, @HiveField(5) this.lng, @HiveField(6)@JsonKey(name: 'is_active') this.isActive, @HiveField(7) final  List<String>? services, @HiveField(8) this.phone, @HiveField(9)@JsonKey(name: 'working_hours') this.workingHours}): _services = services,super._();
@@ -244,7 +246,10 @@ class _BranchesResponseModel extends BranchesResponseModel {
 @pragma('vm:prefer-inline')
 _$BranchesResponseModelCopyWith<_BranchesResponseModel> get copyWith => __$BranchesResponseModelCopyWithImpl<_BranchesResponseModel>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$BranchesResponseModelToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {

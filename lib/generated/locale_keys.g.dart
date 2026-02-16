@@ -121,5 +121,15 @@ abstract class  LocaleKeys {
   static const atm = 'atm';
   static const allLocations = 'allLocations';
   static const locationError = 'locationError';
+  static const noFavorites = 'noFavorites';
+  static const favorites = 'favorites';
+  static const addedToFavorites = 'addedToFavorites';
+  static const removedFromFavorites = 'removedFromFavorites';
+  static const favorite = 'favorite';
+  static const tryAgain = 'tryAgain';
+  static const yourSecureBranchVaultIsEmpty = 'yourSecureBranchVaultIsEmpty';
+  static const addBranchesToFavorite = 'addBranchesToFavorite';
+  static const errorLoadingFavorites = 'errorLoadingFavorites';
+  static const pullToRefresh = 'pullToRefresh';
 
 }

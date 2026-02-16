@@ -87,3 +87,18 @@ _BranchesResponseModel _$BranchesResponseModelFromJson(
   phone: json['phone'] as String?,
   workingHours: json['working_hours'] as String?,
 );
+
+Map<String, dynamic> _$BranchesResponseModelToJson(
+  _BranchesResponseModel instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': ?instance.name,
+  'type': ?instance.type,
+  'address': ?instance.address,
+  'lat': ?instance.lat,
+  'lng': ?instance.lng,
+  'is_active': ?instance.isActive,
+  'services': ?instance.services,
+  'phone': ?instance.phone,
+  'working_hours': ?instance.workingHours,
+};

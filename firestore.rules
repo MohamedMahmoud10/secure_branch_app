@@ -1,19 +1,15 @@
 rules_version = '2';
 // Per-user access only: each user can read/write only their own data.
-// Set USERS_DATA_COLLECTION=users in .env so the app uses the "users" collection.
-// If you use a different collection name, change "users" below to match.
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users: doc id must equal auth.uid (we use .doc(uid) when storing).
+    // Users: doc id must equal auth.uid.
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    // Favorites (when implemented): each user can read/write only their own favorites.
-    // If using subcollection: match /users/{userId}/favorites/{favId} { allow read, write: if request.auth != null && request.auth.uid == userId; }
-    // If using top-level collection with userId field in each document:
-    match /favorites/{favId} {
-      allow read, create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+
+      // Favorites subcollection: users/{uid}/favorites/{branchId}
+      match /favorites/{branchId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }

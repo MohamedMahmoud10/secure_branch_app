@@ -118,6 +118,17 @@
   "branch": "فرع",
   "atm": "صراف آلي",
   "allLocations": "جميع المواقع",
-  "locationError": "تعذر تحديد موقعك."
+  "locationError": "تعذر تحديد موقعك.",
+  "noFavorites": "لا توجد مفضلات بعد",
+  "favorites": "المفضلات",
+  "addedToFavorites": "تمت الإضافة إلى المفضلات",
+  "removedFromFavorites": "تمت الإزالة من المفضلات",
+  "favorite": "المفضلة",
+  "tryAgain": "حاول مرة أخرى",
+  "yourSecureBranchVaultIsEmpty": "خزنة الفروع الآمنة الخاصة بك فارغة",
+  "addBranchesToFavorite": "أضف فروعًا إلى المفضلة للوصول السريع إليها",
+  "errorLoadingFavorites": "خطأ في تحميل المفضلة",
+  "pullToRefresh": "اسحب للتحديث أو حاول مرة أخرى لاحقاً"
+
 }
 

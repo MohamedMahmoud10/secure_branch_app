@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
 import 'package:secure_branch_app/core/common_widgets/app_static_button.dart';
@@ -8,6 +9,7 @@ import 'package:secure_branch_app/core/extensions/color_extension.dart';
 import 'package:secure_branch_app/core/helpers/app_helper_functions.dart';
 import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
 import 'package:secure_branch_app/features/branch/presentation/widgets/branch_widgets/index.dart';
+import 'package:secure_branch_app/features/favorites/presentation/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 
 class NearestBranchCard extends StatelessWidget {
@@ -102,6 +104,28 @@ class NearestBranchCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        BlocBuilder<FavoritesCubit, FavoritesState>(
+                          builder:
+                              (BuildContext context, FavoritesState favState) {
+                            final bool isFav =
+                                favState.isFavorite(branch.id);
+                            return GestureDetector(
+                              onTap: () => context
+                                  .read<FavoritesCubit>()
+                                  .toggleFavorite(branch),
+                              child: Icon(
+                                isFav
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_border_rounded,
+                                color: isFav
+                                    ? AppColors.error
+                                    : AppColors.textSecondary,
+                                size: 20.sp,
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(width: 6.w),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,

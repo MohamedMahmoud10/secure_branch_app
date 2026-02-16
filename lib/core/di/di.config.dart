@@ -40,6 +40,11 @@ import '../../features/branch/data/data_sources/local_data_source/branches_local
 import '../../features/branch/data/data_sources/remote_data_source/branches_remote_data_source.dart'
     as _i707;
 import '../../features/branch/data/repo/branches_repo.dart' as _i590;
+import '../../features/favorites/data/data_sources/local_data_source/favorites_local_data_source.dart'
+    as _i128;
+import '../../features/favorites/data/data_sources/remote_data_source/favorites_remote_data_source.dart'
+    as _i430;
+import '../../features/favorites/data/repo/favorites_repo.dart' as _i742;
 import '../../features/transactions/data/remote_data_source/add_transaction_remote_data_source.dart'
     as _i640;
 import '../../features/transactions/data/remote_data_source/user_transactions_remote_data_source.dart'
@@ -112,6 +117,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i865.ApiConsumer>(
       () => _i774.DioConsumer(client: gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i430.FavoritesRemoteDataSource>(
+      () => _i430.FavoritesRemoteDataSource(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i405.BaseDatabase>(),
+      ),
+    );
     gh.lazySingleton<_i640.AddTransactionRemoteDataSource>(
       () => _i640.AddTransactionRemoteDataSource(
         gh<_i974.FirebaseFirestore>(),
@@ -126,6 +137,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1034.BranchesLocalDataSource>(
       () => _i1034.BranchesLocalDataSource(gh<_i405.BaseDatabase>()),
+    );
+    gh.lazySingleton<_i128.FavoritesLocalDataSource>(
+      () => _i128.FavoritesLocalDataSource(gh<_i405.BaseDatabase>()),
+    );
+    gh.lazySingleton<_i742.FavoritesRepo>(
+      () => _i742.FavoritesRepo(
+        gh<_i430.FavoritesRemoteDataSource>(),
+        gh<_i128.FavoritesLocalDataSource>(),
+      ),
     );
     gh.lazySingleton<_i10.BiometricLoginRepo>(
       () => _i10.BiometricLoginRepo(

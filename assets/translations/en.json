@@ -116,7 +116,18 @@
   "branch": "Branch",
   "atm": "ATM",
   "allLocations": "ALL LOCATIONS",
-  "locationError": "Could not determine your location."
+  "locationError": "Could not determine your location.",
+  "noFavorites": "No favorites yet",
+  "favorites": "Favorites",
+  "addedToFavorites": "Added to favorites",
+  "removedFromFavorites": "Removed from favorites",
+  "favorite": "Favorite",
+  "tryAgain": "Try Again",
+  "yourSecureBranchVaultIsEmpty": "Your secure branch vault is empty",
+  "addBranchesToFavorite": "Add branches to favorites for quick access",
+  "errorLoadingFavorites": "Error loading favorites",
+  "pullToRefresh": "Pull to refresh or try again later"
+
 }
 
 

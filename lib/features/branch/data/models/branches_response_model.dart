@@ -5,7 +5,7 @@ part 'branches_response_model.freezed.dart';
 
 part 'branches_response_model.g.dart';
 
-@Freezed(fromJson: true, toJson: false)
+@Freezed(fromJson: true, toJson: true)
 abstract class BranchesResponseModel with _$BranchesResponseModel {
   @HiveType(typeId: 2, adapterName: 'BranchesAdapter')
   factory BranchesResponseModel({

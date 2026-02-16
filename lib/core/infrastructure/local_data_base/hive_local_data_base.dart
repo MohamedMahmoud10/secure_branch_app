@@ -19,14 +19,16 @@ class HiveDatabaseClient implements BaseDatabase {
     await Hive.initFlutter();
     Hive.registerAdapters();
 
-    // Open branches box with AES encryption (encrypted at rest).
     await _ensureEncryptedBoxOpen<BranchesResponseModel>(
       DatabaseConstants.branchesTable,
     );
+    await _ensureEncryptedBoxOpen<BranchesResponseModel>(
+      DatabaseConstants.favoritesTable,
+    );
+    await _ensureEncryptedBoxOpen<UserDataModel>(DatabaseConstants.userDataTable);
+
   }
 
-  /// Opens an encrypted box with the correct type [T].
-  /// Returns early if the box is already open.
   Future<void> _ensureEncryptedBoxOpen<T>(String tableName) async {
     if (Hive.isBoxOpen(tableName)) return;
     List<int>? key = await _secureStorage.readHiveEncryptionKey();
