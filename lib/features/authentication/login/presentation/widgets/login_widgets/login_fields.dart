@@ -24,12 +24,15 @@ class LoginFields extends HookWidget {
           hintText: LocaleKeys.email.tr(),
           keyboardType: TextInputType.emailAddress,
           validator: Validators.validateEmail,
+          keyboardAction: TextInputAction.next,
         ),
         CustomTextFormField(
           textEditingController: cubit.passwordController,
           hintText: LocaleKeys.password.tr(),
           obscureText: isVisiblePassword.value,
           keyboardType: TextInputType.visiblePassword,
+          keyboardAction: TextInputAction.done,
+
           suffixIcon: IconButton(
             onPressed: () => isVisiblePassword.value = !isVisiblePassword.value,
             icon: Icon(

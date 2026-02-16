@@ -45,15 +45,24 @@ class FavoritesBody extends StatelessWidget {
                   child: Center(child: AnimatedCircularProgressIndicator()),
                 )
               else if (state.isError && state.favorites.isEmpty)
-                ErrorState(
-                  title:
-                      state.errorMsg ?? LocaleKeys.errorLoadingFavorites.tr(),
-                  subtitle: LocaleKeys.pullToRefresh.tr(),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: ErrorState(
+        
+                    title:  state.errorMsg ??LocaleKeys.errorLoadingFavorites.tr(),
+                    subtitle: LocaleKeys.pullToRefresh.tr(),
+                    onRetry: () =>
+                        context.read<FavoritesCubit>().loadFavorites(),
+                  ),
                 )
               else if (state.favorites.isEmpty)
-                EmptyState(
-                  title: LocaleKeys.yourSecureBranchVaultIsEmpty.tr(),
-                  subtitle: LocaleKeys.addBranchesToFavorite.tr(),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: EmptyState(
+                    title: LocaleKeys.noFavorites.tr(),
+                    subtitle: LocaleKeys.addBranchesToFavorite.tr(),
+                    icon: Icons.favorite_border_rounded,
+                  ),
                 )
               else
                 SliverPadding(

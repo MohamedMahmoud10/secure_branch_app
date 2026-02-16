@@ -74,6 +74,9 @@ class AddTransactionBottomSheet extends StatelessWidget {
               hintText: LocaleKeys.merchantRecipient.tr(),
               prefixIcon: const Icon(Icons.storefront_outlined),
               textEditingController: cubit.merchantNameController,
+              keyboardType: TextInputType.name,
+              keyboardAction: TextInputAction.next,
+
             ),
             SizedBox(height: 16.h),
 
@@ -81,6 +84,9 @@ class AddTransactionBottomSheet extends StatelessWidget {
               hintText: LocaleKeys.amount.tr(),
               prefixIcon: const Icon(Icons.attach_money_rounded),
               textEditingController: cubit.amountController,
+              keyboardType: TextInputType.number,
+              keyboardAction: TextInputAction.done,
+
             ),
 
             SizedBox(height: 16.h),

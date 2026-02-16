@@ -21,9 +21,11 @@ class RegisterFields extends HookWidget {
         CustomTextFormField(
           textEditingController: cubit.nameController,
           hintText: LocaleKeys.fullName.tr(),
-          keyboardType: TextInputType.text,
+          keyboardType: TextInputType.name,
           validator: (String? value) =>
               Validators.validateEmptyField(value, LocaleKeys.fullName.tr()),
+          keyboardAction: TextInputAction.next,
+
         ),
         SizedBox(height: 10.h),
         CustomTextFormField(
@@ -31,6 +33,8 @@ class RegisterFields extends HookWidget {
           hintText: LocaleKeys.email.tr(),
           keyboardType: TextInputType.emailAddress,
           validator: Validators.validateEmail,
+          keyboardAction: TextInputAction.next,
+
         ),
         SizedBox(height: 10.h),
         SizedBox(height: 10.h),
@@ -39,6 +43,8 @@ class RegisterFields extends HookWidget {
           hintText: LocaleKeys.password.tr(),
           obscureText: isVisiblePassword.value,
           keyboardType: TextInputType.visiblePassword,
+          keyboardAction: TextInputAction.next,
+
           suffixIcon: IconButton(
             onPressed: () => isVisiblePassword.value = !isVisiblePassword.value,
             icon: Icon(
@@ -54,6 +60,8 @@ class RegisterFields extends HookWidget {
           hintText: LocaleKeys.confirmPassword.tr(),
           obscureText: isVisibleConfirmPassword.value,
           keyboardType: TextInputType.visiblePassword,
+          keyboardAction: TextInputAction.done,
+
           suffixIcon: IconButton(
             onPressed: () => isVisibleConfirmPassword.value =
                 !isVisibleConfirmPassword.value,

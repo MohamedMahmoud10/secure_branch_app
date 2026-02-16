@@ -14,7 +14,7 @@ class FavoriteAppBar extends StatelessWidget {
     return FlexibleSpaceBar(
       centerTitle: true,
       title: Text(
-        LocaleKeys.vault.tr().toUpperCase(),
+        LocaleKeys.favorites.tr().toUpperCase(),
         style: TextStyle(
           fontSize: 16.sp,
           fontWeight: FontWeight.w900,
