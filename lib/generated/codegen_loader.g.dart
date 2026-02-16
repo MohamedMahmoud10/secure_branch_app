@@ -91,7 +91,11 @@ class CodegenLoader extends AssetLoader{
   "validationAmountRequired": "المبلغ مطلوب",
   "validationAmountInvalid": "يرجى إدخال مبلغ صحيح",
   "validationAmountGreaterThanZero": "يجب أن يكون المبلغ أكبر من صفر",
-  "validationCategoryRequired": "يرجى اختيار فئة المعاملة"
+  "validationCategoryRequired": "يرجى اختيار فئة المعاملة",
+  "transactionSuccessMessage": "تمت إضافة المعاملة بنجاح",
+  "transactionSuccessDescription": "تم تسجيل معاملتك بشكل آمن في السجل",
+  "transactionErrorMessage": "فشلت إضافة المعاملة",
+  "transactionErrorDescription": "حدث خطأ أثناء إضافة المعاملة، يرجى المحاولة مرة أخرى"
 };
 static const Map<String,dynamic> _en = {
   "pullToRefreshIdleText": "Pull down to refresh",
@@ -170,7 +174,11 @@ static const Map<String,dynamic> _en = {
   "validationAmountRequired": "Amount is required",
   "validationAmountInvalid": "Please enter a valid amount",
   "validationAmountGreaterThanZero": "Amount must be greater than zero",
-  "validationCategoryRequired": "Please select a transaction category"
+  "validationCategoryRequired": "Please select a transaction category",
+  "transactionSuccessMessage": "Transaction added successfully",
+  "transactionSuccessDescription": "Your transaction has been securely recorded to the ledger",
+  "transactionErrorMessage": "Transaction failed",
+  "transactionErrorDescription": "An error occurred while adding the transaction, please try again"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

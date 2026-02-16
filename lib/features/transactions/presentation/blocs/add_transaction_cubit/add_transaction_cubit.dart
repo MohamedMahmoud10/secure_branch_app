@@ -96,6 +96,7 @@ class AddTransactionCubit extends Cubit<AddTransactionState> {
         status: GenericStateStatus.validationError,
         validationErrors: errors,
         isValidForm: isValidForm,
+        selectedCategory: state.selectedCategory
       ),
     );
   }

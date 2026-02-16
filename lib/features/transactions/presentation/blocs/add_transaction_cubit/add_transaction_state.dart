@@ -42,14 +42,14 @@ class AddTransactionState extends Equatable implements LoadableState {
       errorMsg: errorMsg ?? this.errorMsg,
       isValidForm: isValidForm ?? this.isValidForm,
       userId: userId ?? this.userId,
-      validationErrors: validationErrors,
-      selectedCategory: selectedCategory,
+      validationErrors: validationErrors ?? this.validationErrors,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
     );
   }
 
   @override
   String toString() {
-    return '''AddTransactionState(status: $status,errorMsg: $errorMsg , isValidForm :$isValidForm, )''';
+    return '''AddTransactionState(status: $status,errorMsg: $errorMsg , isValidForm :$isValidForm, selectedCategory :$selectedCategory, )''';
   }
 
   @override

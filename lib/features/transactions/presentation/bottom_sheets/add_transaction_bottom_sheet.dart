@@ -73,14 +73,14 @@ class AddTransactionBottomSheet extends StatelessWidget {
             CustomTextFormField(
               hintText: LocaleKeys.merchantRecipient.tr(),
               prefixIcon: const Icon(Icons.storefront_outlined),
-              textEditingController: TextEditingController(),
+              textEditingController: cubit.merchantNameController,
             ),
             SizedBox(height: 16.h),
 
             CustomTextFormField(
               hintText: LocaleKeys.amount.tr(),
               prefixIcon: const Icon(Icons.attach_money_rounded),
-              textEditingController: TextEditingController(),
+              textEditingController: cubit.amountController,
             ),
 
             SizedBox(height: 16.h),

@@ -22,14 +22,9 @@ class TransactionsShimmerView extends StatelessWidget {
             contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
             leading: CircleAvatar(
               backgroundColor: AppColors.primary.withValueOpacity(0.1),
-              child: AppShimmerWidget(
-                width: 45.w,
-                height: 30.h,
-                borderRadius: BorderRadiusDirectional.circular(99.r),
-              ),
             ),
             title: AppShimmerWidget(
-              width: 75.w,
+              width: 45.w,
               height: 10.h,
               borderRadius: BorderRadiusDirectional.circular(12.r),
             ),
