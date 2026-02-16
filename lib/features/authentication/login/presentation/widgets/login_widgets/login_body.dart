@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +19,7 @@ class LoginBody extends HookWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return LoginListenerWidget(
-      child: FormBuilder(
+      child: Form(
         key: context.read<LoginCubit>().form,
         child: SingleChildScrollView(
           child: Column(

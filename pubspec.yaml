@@ -2,7 +2,7 @@ name: secure_branch_app
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.10.4
@@ -60,12 +60,6 @@ dependencies:
   # load and cache network images. Can also be used with placeholder and error widgets.
   cached_network_image: ^3.4.1
 
-  # Custom dropdown widget
-  animated_custom_dropdown: ^3.1.1
-
-  # Easily create toast messages
-  fluttertoast: ^9.0.0
-
   # Injectable Generator is a generator for injectable.
   injectable_generator: ^2.8.1
 
@@ -93,9 +87,6 @@ dependencies:
   # Contains code to deal with internationalized/localized messages,
   intl: ^0.20.2
 
-  # A widget provided to the flutter scroll component drop-down refresh and pull up load
-  pull_to_refresh: ^2.0.0
-
   # Flutter widgets implementing the current iOS design language.
   cupertino_icons: ^1.0.8
 
@@ -117,9 +108,6 @@ dependencies:
   # plugin for launching a URL. Supports web, phone, SMS, and email schemes.
   url_launcher: ^6.3.1
 
-  #helps in creation of data collection forms
-  flutter_form_builder: ^10.1.0
-
   # Add features to the Android / iOS keyboard in a very simple way.
   keyboard_actions: ^4.2.0
 
@@ -128,9 +116,6 @@ dependencies:
 
   #Load configuration at runtime from a .env file which can be used throughout the application
   flutter_dotenv: ^6.0.0
-
-  # plugin for taking new pictures with the camera
-  image_picker: ^1.1.2
 
   # A set of high-level APIs over PointyCastle for two-way cryptography
   encrypt: ^5.0.3

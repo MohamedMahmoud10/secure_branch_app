@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
 import 'package:secure_branch_app/core/assets/app_icons.dart';
 import 'package:toastification/toastification.dart';
@@ -137,14 +136,4 @@ class ToastManager {
     );
   }
 
-  void showErrorToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: AppColors.red500Base,
-      textColor: AppColors.primaryWhite,
-      fontSize: 16.sp,
-    );
-  }
 }

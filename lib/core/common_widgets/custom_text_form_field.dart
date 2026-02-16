@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
@@ -96,12 +95,11 @@ class CustomTextFormField extends HookWidget {
               primary: AppColors.primary,
             ),
           ),
-          child: FormBuilderTextField(
+          child: TextFormField(
             enabled: enabled ?? true,
             onTapOutside: (PointerDownEvent event) =>
                 FocusManager.instance.primaryFocus?.unfocus(),
             maxLines: maxLines ?? 1,
-            name: textFieldName,
             inputFormatters: const <TextInputFormatter>[],
             readOnly: readOnly,
             obscureText: obscureText,
@@ -109,7 +107,6 @@ class CustomTextFormField extends HookWidget {
             focusNode: focusNode,
             onChanged: onChanged,
             onTap: onTap,
-            onSubmitted: onFieldSubmitted,
             validator: validator,
             onSaved: onSaved,
             keyboardType: keyboardType,

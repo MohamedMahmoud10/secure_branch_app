@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:secure_branch_app/core/helpers/enums.dart';
 import 'package:secure_branch_app/core/helpers/validators.dart';
@@ -41,7 +40,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormBuilderState> form = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormState> form = GlobalKey<FormState>();
 
   Future<void> login() async {
     if (form.currentState!.validate()) {

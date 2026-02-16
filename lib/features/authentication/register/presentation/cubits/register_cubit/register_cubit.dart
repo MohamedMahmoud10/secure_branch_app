@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:injectable/injectable.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:secure_branch_app/core/helpers/enums.dart';
@@ -41,7 +40,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     confirmPasswordController.addListener(validateFormFields);
   }
 
-  final GlobalKey<FormBuilderState> form = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormState> form = GlobalKey<FormState>();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
