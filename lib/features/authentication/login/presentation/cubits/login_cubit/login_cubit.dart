@@ -82,19 +82,14 @@ class LoginCubit extends Cubit<LoginState> {
       errors['password'] = LocaleKeys.validationPasswordRequired.tr();
     }
 
-    if (errors.isNotEmpty) {
-      emit(
-        state.copyWith(
-          status: GenericStateStatus.validationError,
-          validationErrors: errors,
-          isFormEmpty: false,
-        ),
-      );
-      return;
-    }
+    final bool isValidForm = errors.isEmpty;
 
     emit(
-      state.copyWith(validationErrors: <String, String>{}, isFormEmpty: true),
+      state.copyWith(
+        status: GenericStateStatus.validationError,
+        validationErrors: errors,
+        isValidForm: isValidForm,
+      ),
     );
   }
 

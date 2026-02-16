@@ -33,7 +33,7 @@ class LoginActionButton extends StatelessWidget {
       },
 
       isClickable: context.select<LoginCubit, bool>(
-        (LoginCubit cubit) => !cubit.state.isFormEmpty!,
+        (LoginCubit cubit) => cubit.state.isValidForm!,
       ),
       loadingState: const LoginState(status: GenericStateStatus.loading),
       cubit: context.read<LoginCubit>(),

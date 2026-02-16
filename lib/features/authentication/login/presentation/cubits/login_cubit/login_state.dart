@@ -15,14 +15,14 @@ class LoginState extends Equatable implements LoadableState {
   final GenericStateStatus status;
   final String? errorMsg;
   final UserDataModel? userDataModel;
-  final bool? isFormEmpty;
+  final bool? isValidForm;
   final Map<String, String>? validationErrors;
 
   const LoginState({
     required this.status,
     this.userDataModel,
     this.errorMsg,
-    this.isFormEmpty = true,
+    this.isValidForm = false,
     this.validationErrors,
   });
 
@@ -30,21 +30,21 @@ class LoginState extends Equatable implements LoadableState {
     GenericStateStatus? status,
     String? errorMsg,
     UserDataModel? userDataModel,
-    bool? isFormEmpty,
+    bool? isValidForm,
     Map<String, String>? validationErrors,
   }) {
     return LoginState(
       status: status ?? this.status,
       errorMsg: errorMsg ?? this.errorMsg,
       userDataModel: userDataModel ?? this.userDataModel,
-      isFormEmpty: isFormEmpty ?? this.isFormEmpty,
+      isValidForm: isValidForm ?? this.isValidForm,
       validationErrors: validationErrors ?? this.validationErrors,
     );
   }
 
   @override
   String toString() {
-    return '''LoginState(status: $status,errorMsg: $errorMsg , userDataModel :$userDataModel, isFormEmpty:$isFormEmpty )''';
+    return '''LoginState(status: $status,errorMsg: $errorMsg , userDataModel :$userDataModel, isValidForm:$isValidForm )''';
   }
 
   @override
@@ -55,7 +55,7 @@ class LoginState extends Equatable implements LoadableState {
     status,
     errorMsg,
     userDataModel,
-    isFormEmpty,
+    isValidForm,
     validationErrors,
   ];
 }

@@ -114,7 +114,9 @@ class CustomTextFormField extends HookWidget {
             onSaved: onSaved,
             keyboardType: keyboardType,
             autofocus: autoFocus ?? false,
-            style: Theme.of(context).textTheme.labelSmall,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: AppColors.primaryBlack
+            ),
             autovalidateMode: autoValidateMode,
             maxLength: maxLength,
             textInputAction: keyboardAction,

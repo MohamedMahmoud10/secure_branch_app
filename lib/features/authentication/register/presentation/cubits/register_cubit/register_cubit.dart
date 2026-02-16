@@ -81,7 +81,6 @@ class RegisterCubit extends Cubit<RegisterState> {
   void validateFormFields() {
     final Map<String, String> errors = <String, String>{};
 
-
     if (nameController.text.trim().isEmpty) {
       errors['name'] = LocaleKeys.validationNameRequired.tr();
     }
@@ -97,31 +96,22 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
 
     if (confirmPasswordController.text.trim().isEmpty) {
-      errors['confirmPassword'] = LocaleKeys.validationConfirmPasswordRequired.tr();
+      errors['confirmPassword'] = LocaleKeys.validationConfirmPasswordRequired
+          .tr();
     } else if (passwordController.text != confirmPasswordController.text) {
       errors['confirmPassword'] = LocaleKeys.validationPasswordNotMatch.tr();
     }
 
-    if (errors.isNotEmpty) {
-      emit(
-        state.copyWith(
-          status: GenericStateStatus.validationError,
-          validationErrors: errors,
-          isFormEmpty: false,
-        ),
-      );
-      return;
-    }
+    final bool isValidForm = errors.isEmpty;
 
     emit(
       state.copyWith(
-        validationErrors: <String, String>{},
-        isFormEmpty: false,
+        status:  GenericStateStatus.validationError,
+        validationErrors: errors,
+        isValidForm: isValidForm,
       ),
     );
-
   }
-
 
   @override
   Future<void> close() {

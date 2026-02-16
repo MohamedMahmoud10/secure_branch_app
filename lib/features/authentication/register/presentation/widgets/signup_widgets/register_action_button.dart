@@ -36,7 +36,7 @@ class RegisterActionButton extends StatelessWidget {
       cubit: context.read<RegisterCubit>(),
       onTap: context.read<RegisterCubit>().registerUser,
       isClickable: context.select<RegisterCubit, bool>(
-        (RegisterCubit cubit) => !cubit.state.isFormEmpty!,
+        (RegisterCubit cubit) => cubit.state.isValidForm!,
       ),
       text: LocaleKeys.signUp.tr(),
     ).paddingHorizontal(20.w).paddingVertical(10.h);
