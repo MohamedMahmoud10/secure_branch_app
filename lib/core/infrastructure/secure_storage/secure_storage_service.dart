@@ -6,16 +6,13 @@ import 'package:injectable/injectable.dart';
 /// Keys for secure storage. Use these so we can clear auth-related data on logout.
 abstract class SecureStorageKeys {
   const SecureStorageKeys._();
+
   static const String hiveEncryptionKey = 'hive_encryption_key';
 }
 
 @lazySingleton
 class SecureStorageService {
-  SecureStorageService() : _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
-  );
+  SecureStorageService() : _storage = const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 

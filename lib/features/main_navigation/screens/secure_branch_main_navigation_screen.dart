@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
 import 'package:secure_branch_app/config/theme/app_system_ui_overlay_styles.dart';
 import 'package:secure_branch_app/core/assets/app_icons.dart';
+import 'package:secure_branch_app/core/extensions/color_extension.dart';
 import 'package:secure_branch_app/features/main_navigation/widgets/navigation_bar_icons.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 
@@ -47,47 +48,39 @@ class _SecureBranchMainNavigationScreenState
       child: Scaffold(
         body: widget.navigationShell,
         bottomNavigationBar: Container(
-          height: 68.h,
-          width: double.infinity,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            shadows: const <BoxShadow>[
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
+          height: 72.h,
+          decoration: BoxDecoration(
+            color: AppColors.primaryDark,
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: <BoxShadow>[
               BoxShadow(
-                color: AppColors.primary,
-                blurRadius: 50,
-                offset: Offset(0, -20),
+                color: AppColors.primary.withValueOpacity(0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  NavBarIcon(
-                    icon: AppIcons.dashboardIcon,
-                    label: LocaleKeys.home.tr(),
-                    active: currentIndex == 0,
-                    onClick: () => goBranch(0),
-                  ),
-                  NavBarIcon(
-                    icon: AppIcons.mapIcon,
-                    label: LocaleKeys.locator.tr(),
-                    active: currentIndex == 1,
-                    onClick: () => goBranch(1),
-                  ),
-                  NavBarIcon(
-                    icon: AppIcons.shieldIcon,
-                    label: LocaleKeys.vault.tr(),
-                    active: currentIndex == 2,
-                    onClick: () => goBranch(2),
-                  ),
-                ],
+              NavBarIcon(
+                icon: AppIcons.dashboardIcon,
+                label: LocaleKeys.home.tr(),
+                active: currentIndex == 0,
+                onClick: () => goBranch(0),
+              ),
+              NavBarIcon(
+                icon: AppIcons.mapIcon,
+                label: LocaleKeys.locator.tr(),
+                active: currentIndex == 1,
+                onClick: () => goBranch(1),
+              ),
+              NavBarIcon(
+                icon: AppIcons.shieldIcon,
+                label: LocaleKeys.vault.tr(),
+                active: currentIndex == 2,
+                onClick: () => goBranch(2),
               ),
             ],
           ),

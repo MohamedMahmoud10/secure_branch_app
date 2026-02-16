@@ -52,5 +52,17 @@ abstract class  LocaleKeys {
   static const validationPasswordNotMatch = 'validationPasswordNotMatch';
   static const validationGenericError = 'validationGenericError';
   static const error = 'error';
+  static const totalBalance = 'totalBalance';
+  static const yourSecureCards = 'yourSecureCards';
+  static const recentActivity = 'recentActivity';
+  static const viewAll = 'viewAll';
+  static const findNearestBranches = 'findNearestBranches';
+  static const locateCubicSecurePoints = 'locateCubicSecurePoints';
+  static const newTransaction = 'newTransaction';
+  static const recordSecureLedgerEntry = 'recordSecureLedgerEntry';
+  static const merchantRecipient = 'merchantRecipient';
+  static const amount = 'amount';
+  static const transactionCategory = 'transactionCategory';
+  static const encryptAndPushToLedger = 'encryptAndPushToLedger';
 
 }

@@ -47,6 +47,19 @@
   "validationConfirmPasswordRequired": "Confirm password is required",
   "validationPasswordNotMatch": "Passwords do not match",
   "validationGenericError": "Please check your input and try again.",
-  "error": "Error"
+  "error": "Error",
+  "totalBalance": "Total Balance",
+  "yourSecureCards": "Your Secure Cards",
+  "recentActivity": "Recent Activity",
+  "viewAll": "View All",
+  "findNearestBranches": "Find Nearest Branches",
+  "locateCubicSecurePoints": "Locate CUBIC secure points nearby",
+  "newTransaction": "New Transaction",
+  "recordSecureLedgerEntry": "Record a secure ledger entry",
+  "merchantRecipient": "Merchant / Recipient",
+  "amount": "Amount",
+  "transactionCategory": "Transaction Category",
+  "encryptAndPushToLedger": "Encrypt & Push to Ledger"
+
 }
 

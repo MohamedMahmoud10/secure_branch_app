@@ -47,5 +47,18 @@
   "validationConfirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
   "validationPasswordNotMatch": "كلمة المرور غير متطابقة",
   "validationGenericError": "يرجى التحقق من البيانات وإعادة المحاولة.",
-  "error": "خطأ"
+  "error": "خطأ",
+  "totalBalance": "إجمالي الرصيد",
+  "yourSecureCards": "بطاقاتك الآمنة",
+  "recentActivity": "النشاط الأخير",
+  "viewAll": "عرض الكل",
+  "findNearestBranches": "البحث عن أقرب الفروع",
+  "locateCubicSecurePoints": "حدد نقاط كيوبيك سيكيور القريبة منك",
+  "newTransaction": "معاملة جديدة",
+  "recordSecureLedgerEntry": "تسجيل إدخال آمن في السجل",
+  "merchantRecipient": "التاجر / المستلم",
+  "amount": "المبلغ",
+  "transactionCategory": "فئة المعاملة",
+  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل"
+
 }

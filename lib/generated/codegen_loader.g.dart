@@ -63,7 +63,19 @@ class CodegenLoader extends AssetLoader{
   "validationConfirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
   "validationPasswordNotMatch": "كلمة المرور غير متطابقة",
   "validationGenericError": "يرجى التحقق من البيانات وإعادة المحاولة.",
-  "error": "خطأ"
+  "error": "خطأ",
+  "totalBalance": "إجمالي الرصيد",
+  "yourSecureCards": "بطاقاتك الآمنة",
+  "recentActivity": "النشاط الأخير",
+  "viewAll": "عرض الكل",
+  "findNearestBranches": "البحث عن أقرب الفروع",
+  "locateCubicSecurePoints": "حدد نقاط كيوبيك سيكيور القريبة منك",
+  "newTransaction": "معاملة جديدة",
+  "recordSecureLedgerEntry": "تسجيل إدخال آمن في السجل",
+  "merchantRecipient": "التاجر / المستلم",
+  "amount": "المبلغ",
+  "transactionCategory": "فئة المعاملة",
+  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل"
 };
 static const Map<String,dynamic> _en = {
   "pullToRefreshIdleText": "Pull down to refresh",
@@ -114,7 +126,19 @@ static const Map<String,dynamic> _en = {
   "validationConfirmPasswordRequired": "Confirm password is required",
   "validationPasswordNotMatch": "Passwords do not match",
   "validationGenericError": "Please check your input and try again.",
-  "error": "Error"
+  "error": "Error",
+  "totalBalance": "Total Balance",
+  "yourSecureCards": "Your Secure Cards",
+  "recentActivity": "Recent Activity",
+  "viewAll": "View All",
+  "findNearestBranches": "Find Nearest Branches",
+  "locateCubicSecurePoints": "Locate CUBIC secure points nearby",
+  "newTransaction": "New Transaction",
+  "recordSecureLedgerEntry": "Record a secure ledger entry",
+  "merchantRecipient": "Merchant / Recipient",
+  "amount": "Amount",
+  "transactionCategory": "Transaction Category",
+  "encryptAndPushToLedger": "Encrypt & Push to Ledger"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }
