@@ -15,6 +15,16 @@ import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/authentication/login/data/remote_data_source/get_user_data_remote_data_source.dart'
+    as _i480;
+import '../../features/authentication/login/data/repo/get_user_data_repo.dart'
+    as _i1058;
+import '../../features/authentication/store_user_data/data/data_sources/local_data_source/save_user_data_local_data_source.dart'
+    as _i458;
+import '../../features/authentication/store_user_data/data/data_sources/remote_data_source/store_user_data_remote_data_source.dart'
+    as _i897;
+import '../../features/authentication/store_user_data/data/repo/store_user_data_repo.dart'
+    as _i73;
 import '../infrastructure/local_data_base/base_local_data_base.dart' as _i405;
 import '../infrastructure/local_data_base/hive_local_data_base.dart' as _i393;
 import '../infrastructure/network/api_consumer.dart' as _i865;
@@ -35,8 +45,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i356.AppInterceptors>(() => _i356.AppInterceptors());
     gh.lazySingleton<_i405.BaseDatabase>(() => _i393.HiveDatabaseClient());
+    gh.lazySingleton<_i480.GetUserDataRemoteDataSource>(
+      () => _i480.GetUserDataRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.lazySingleton<_i897.StoreUserDataRemoteDataSource>(
+      () => _i897.StoreUserDataRemoteDataSource(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.lazySingleton<_i458.SaveUserDataLocalDataSource>(
+      () => _i458.SaveUserDataLocalDataSource(gh<_i405.BaseDatabase>()),
+    );
+    gh.lazySingleton<_i73.StoreUserDataRepo>(
+      () => _i73.StoreUserDataRepo(
+        gh<_i897.StoreUserDataRemoteDataSource>(),
+        gh<_i458.SaveUserDataLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i865.ApiConsumer>(
       () => _i774.DioConsumer(client: gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i1058.GetUserDataRepo>(
+      () => _i1058.GetUserDataRepo(
+        gh<_i480.GetUserDataRemoteDataSource>(),
+        gh<_i458.SaveUserDataLocalDataSource>(),
+      ),
     );
     return this;
   }

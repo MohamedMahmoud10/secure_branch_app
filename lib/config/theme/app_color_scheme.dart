@@ -15,7 +15,7 @@ extension AppColorScheme on AppTheme {
   ColorScheme get _lightColorScheme => const ColorScheme(
     brightness: Brightness.light,
 
-    primary: AppColors.primary,
+    primary: AppColors.primaryWhite,
     onPrimary: AppColors.primary,
     secondary: AppColors.primary,
     onSecondary: AppColors.primary,

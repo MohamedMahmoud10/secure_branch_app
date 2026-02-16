@@ -84,26 +84,22 @@ class CustomTextFormField extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         if (labelText != null)
-          Text(
-            labelText!,
-            style: Theme.of(context).textTheme.labelSmall,
-          )
+          Text(labelText!, style: Theme.of(context).textTheme.labelSmall)
         else
           const SizedBox.shrink(),
-        SizedBox(
-          height: 8.h,
-        ),
+        SizedBox(height: 8.h),
         Theme(
           data: ThemeData(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-                  surface: Theme.of(context).colorScheme.primaryContainer,
-                  onSurface: AppColors.primaryBlack,
-                  primary: AppColors.primary,
-                ),
+              surface: Theme.of(context).colorScheme.primaryContainer,
+              onSurface: AppColors.primaryBlack,
+              primary: AppColors.primary,
+            ),
           ),
           child: FormBuilderTextField(
             enabled: enabled ?? true,
-            onTapOutside: (PointerDownEvent event) =>FocusManager.instance.primaryFocus?.unfocus(),
+            onTapOutside: (PointerDownEvent event) =>
+                FocusManager.instance.primaryFocus?.unfocus(),
             maxLines: maxLines ?? 1,
             name: textFieldName,
             inputFormatters: const <TextInputFormatter>[],
@@ -121,7 +117,7 @@ class CustomTextFormField extends HookWidget {
             style: Theme.of(context).textTheme.labelSmall,
             autovalidateMode: autoValidateMode,
             maxLength: maxLength,
-            textInputAction:keyboardAction ,
+            textInputAction: keyboardAction,
             cursorColor: Theme.of(context).colorScheme.onPrimary,
             decoration: InputDecoration(
               constraints: BoxConstraints(
@@ -131,12 +127,11 @@ class CustomTextFormField extends HookWidget {
               filled: true,
               fillColor: fillColor ?? Theme.of(context).colorScheme.primary,
               hintText: hintText,
-              hintStyle: hintStyle ??
-                  Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerLowest,
-                      ),
+              hintStyle:
+                  hintStyle ??
+                  Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: AppColors.textHint),
               helperText: ' ',
               suffixIcon: suffixIcon,
               prefixIcon: prefixIcon,
@@ -149,24 +144,18 @@ class CustomTextFormField extends HookWidget {
                 borderRadius: BorderRadius.circular(8.0.r),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                borderSide: const BorderSide(
+                  color: AppColors.textHint,
                   width: 1.3,
                 ),
                 borderRadius: BorderRadius.circular(8.0.r),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 1.3,
-                ),
+                borderSide: const BorderSide(color: Colors.red, width: 1.3),
                 borderRadius: BorderRadius.circular(8.0.r),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 1.3,
-                ),
+                borderSide: const BorderSide(color: Colors.red, width: 1.3),
                 borderRadius: BorderRadius.circular(8.0.r),
               ),
             ),

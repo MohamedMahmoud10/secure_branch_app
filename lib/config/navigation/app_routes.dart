@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/navigation/app_router.dart';
 import 'package:secure_branch_app/config/navigation/route_names.dart';
 import 'package:secure_branch_app/core/helpers/app_helper_functions.dart';
+import 'package:secure_branch_app/features/authentication/login/presentation/screens/login_screen.dart';
+import 'package:secure_branch_app/features/authentication/register/presentation/screens/register_screen.dart';
 import 'package:secure_branch_app/features/branch/presentation/screens/branch_screen.dart';
 import 'package:secure_branch_app/features/favorites/presentation/screens/favorites_screen.dart';
 import 'package:secure_branch_app/features/home/presentation/screens/home_screen.dart';
@@ -78,6 +80,21 @@ final List<RouteBase> appRoutes = <RouteBase>[
     path: RouteNames.splash,
     pageBuilder: (BuildContext context, GoRouterState state) {
       return AppHelperFunctions().fadeTransition(page: const SplashScreen());
+    },
+  ),
+
+  GoRoute(
+    path: RouteNames.register,
+    pageBuilder: (BuildContext context, GoRouterState state) {
+      return AppHelperFunctions().slideFromBottomToTopTransition(
+        page: const RegisterScreen(),
+      );
+    },
+  ),
+  GoRoute(
+    path: RouteNames.login,
+    pageBuilder: (BuildContext context, GoRouterState state) {
+      return AppHelperFunctions().fadeTransition(page: const LoginScreen());
     },
   ),
 ];

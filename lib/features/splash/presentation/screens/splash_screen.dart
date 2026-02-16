@@ -3,13 +3,12 @@ import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:secure_branch_app/config/navigation/route_names.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
 import 'package:secure_branch_app/core/assets/app_images.dart';
 import 'package:secure_branch_app/core/common_widgets/animated_circular_progress_indicator.dart';
 import 'package:secure_branch_app/core/const/const_strings.dart';
 import 'package:secure_branch_app/core/extensions/color_extension.dart';
+import 'package:secure_branch_app/core/helpers/app_helper_functions.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,8 +36,8 @@ class _SplashScreenState extends State<SplashScreen>
       end: 2 * math.pi,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
-    Timer(const Duration(seconds: 4), () {
-      context.go(RouteNames.home);
+    Timer(const Duration(seconds: 4), () async {
+      await AppHelperFunctions().checkCachedKeysAndNavigate();
     });
   }
 

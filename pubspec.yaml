@@ -79,7 +79,7 @@ dependencies:
   hive_ce_flutter: ^2.3.2
 
   # Generating code for JSON serialization and deserialization.
-  json_annotation: ^4.9.0
+  json_annotation: ^4.10.0
 
   # Code generator package for Dart projects which allows you to easily serialize JSON objects.
   json_serializable: ^6.11.1
@@ -141,6 +141,8 @@ dependencies:
   # plugin for securely storing sensitive data using encrypted storage.
   flutter_secure_storage: ^10.0.0
 
+  # beautiful animated effects & builders
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
 

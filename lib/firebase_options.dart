@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAlUvZyx0jcdrMZErQ4ww-dnFUfy_9zG0g',
-    appId: '1:817268268364:android:050a7d2edc21a03a2703e9',
-    messagingSenderId: '817268268364',
-    projectId: 'branch-app-79b6d',
-    storageBucket: 'branch-app-79b6d.firebasestorage.app',
+    apiKey: 'AIzaSyCa7KlVPEss3qTtYW1wZu291Xu9685DSD0',
+    appId: '1:504178606232:android:50aa4176c7bb08cf1790ed',
+    messagingSenderId: '504178606232',
+    projectId: 'branch-app-e0c55',
+    storageBucket: 'branch-app-e0c55.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDbGS0NDCk8JnVKjYhrTo0FMhslTwu8Om8',
-    appId: '1:817268268364:ios:922b88c32a1911242703e9',
-    messagingSenderId: '817268268364',
-    projectId: 'branch-app-79b6d',
-    storageBucket: 'branch-app-79b6d.firebasestorage.app',
+    apiKey: 'AIzaSyD8SRD9hpbGGzvSOy_cIPLpeOvHGMhxWgI',
+    appId: '1:504178606232:ios:4770e10184a938101790ed',
+    messagingSenderId: '504178606232',
+    projectId: 'branch-app-e0c55',
+    storageBucket: 'branch-app-e0c55.firebasestorage.app',
     iosBundleId: 'com.secure.branch.app',
   );
 

@@ -2,6 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:secure_branch_app/generated/locale_keys.g.dart';
 
 class Validators {
+
+  static bool isValidEmail(String value) {
+    final RegExp emailRegex =
+    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(value.trim());
+  }
+
   static String? validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
       return LocaleKeys.emailRequired.tr();

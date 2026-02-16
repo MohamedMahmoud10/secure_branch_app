@@ -24,5 +24,32 @@ abstract class  LocaleKeys {
   static const locator = 'locator';
   static const vault = 'vault';
   static const establishingSecureConnection = 'establishingSecureConnection';
+  static const email = 'email';
+  static const password = 'password';
+  static const confirmPassword = 'confirmPassword';
+  static const fullName = 'fullName';
+  static const successMessage = 'successMessage';
+  static const welcomeMessage = 'welcomeMessage';
+  static const errorMessage = 'errorMessage';
+  static const errorDescription = 'errorDescription';
+  static const signUp = 'signUp';
+  static const loginErrorMessage = 'loginErrorMessage';
+  static const loginErrorDescription = 'loginErrorDescription';
+  static const alreadyHaveAccount = 'alreadyHaveAccount';
+  static const logIn = 'logIn';
+  static const signIn = 'signIn';
+  static const dontHaveAccount = 'dontHaveAccount';
+  static const cubicSecure = 'cubicSecure';
+  static const enterpriseGradeProtection = 'enterpriseGradeProtection';
+  static const alreadyPartOfTheNetwork = 'alreadyPartOfTheNetwork';
+  static const createSecureId = 'createSecureId';
+  static const validationNameRequired = 'validationNameRequired';
+  static const validationEmailRequired = 'validationEmailRequired';
+  static const validationEmailInvalid = 'validationEmailInvalid';
+  static const validationPasswordRequired = 'validationPasswordRequired';
+  static const validationConfirmPasswordRequired = 'validationConfirmPasswordRequired';
+  static const validationPasswordNotMatch = 'validationPasswordNotMatch';
+  static const validationGenericError = 'validationGenericError';
+  static const error = 'error';
 
 }

@@ -1,6 +1,9 @@
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
 import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local_data_base.dart';
+import 'package:secure_branch_app/core/utilities/constants/index.dart';
+import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/hive_registrar.g.dart';
 
 @LazySingleton(as: BaseDatabase)
 class HiveDatabaseClient implements BaseDatabase {
@@ -9,10 +12,13 @@ class HiveDatabaseClient implements BaseDatabase {
     await Hive.initFlutter();
 
     // region register adapters
+    Hive.registerAdapters();
 
     // endregion
 
     // region open boxes
+    await Hive.openBox<UserDataModel>(DatabaseConstants.userDataTable);
+
     // endregion
   }
 
@@ -41,18 +47,13 @@ class HiveDatabaseClient implements BaseDatabase {
   }
 
   @override
-  T? get<T>({
-    required String tableName,
-    required String key,
-  }) {
+  T? get<T>({required String tableName, required String key}) {
     final Box<T> box = Hive.box<T>(tableName);
     return box.get(key);
   }
 
   @override
-  List<T>? getAll<T>({
-    required String tableName,
-  }) {
+  List<T>? getAll<T>({required String tableName}) {
     final Box<T> box = Hive.box<T>(tableName);
     return box.values.toList();
   }
@@ -67,9 +68,7 @@ class HiveDatabaseClient implements BaseDatabase {
   }
 
   @override
-  Future<int> clear({
-    required String tableName,
-  }) async {
+  Future<int> clear({required String tableName}) async {
     final Box<dynamic> box = Hive.box(tableName);
     return box.clear();
   }

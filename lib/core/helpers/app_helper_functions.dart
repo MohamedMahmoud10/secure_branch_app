@@ -1,10 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:secure_branch_app/config/navigation/app_router.dart';
+import 'package:secure_branch_app/config/navigation/route_names.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:secure_branch_app/core/di/index.dart';
 import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local_data_base.dart';
+import 'package:secure_branch_app/core/utilities/constants/index.dart';
+import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/utils/app_logger.dart';
 
 /// A utility class that provides helper functions for common tasks
 /// such as routing, transitions, and checking user states from local storage.
@@ -162,4 +166,40 @@ class AppHelperFunctions {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
+  /// Validates cached user data and navigates to the appropriate screen.
+  ///
+  /// This method checks whether a cached [UserDataModel] exists in local storage.
+  /// Based on the presence of this data, it determines the correct navigation flow.
+  ///
+  /// Navigation behavior:
+  /// - If cached user data **exists** → Navigate to the home screen.
+  /// - If cached user data **does not exist** → Navigate to the login screen.
+  ///
+  /// Error handling:
+  /// - If any exception occurs while accessing local storage,
+  ///   the user is redirected to the login screen as a safe fallback.
+  ///
+  /// This method should typically be called during app startup
+  /// (e.g., splash screen or initial routing logic).
+  Future<void> checkCachedKeysAndNavigate() async {
+    try {
+      final UserDataModel? userData = dbClient.get<UserDataModel>(
+        tableName: DatabaseConstants.userDataTable,
+        key: DatabaseConstants.userDataKey,
+      );
+
+      if (userData == null) {
+        AppLogger().error(
+          'No user data found in cache. Redirecting to authentication.',
+        );
+        router.go(RouteNames.login);
+        return;
+      }
+
+      router.go(RouteNames.home);
+    } catch (e, stackTrace) {
+      AppLogger().error('Error while checking cached keys: $e\n$stackTrace');
+      router.go(RouteNames.login);
+    }
+  }
 }
