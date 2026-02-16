@@ -80,5 +80,9 @@ abstract class  LocaleKeys {
   static const validationAmountInvalid = 'validationAmountInvalid';
   static const validationAmountGreaterThanZero = 'validationAmountGreaterThanZero';
   static const validationCategoryRequired = 'validationCategoryRequired';
+  static const transactionSuccessMessage = 'transactionSuccessMessage';
+  static const transactionSuccessDescription = 'transactionSuccessDescription';
+  static const transactionErrorMessage = 'transactionErrorMessage';
+  static const transactionErrorDescription = 'transactionErrorDescription';
 
 }

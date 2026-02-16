@@ -75,6 +75,10 @@
   "validationAmountRequired": "المبلغ مطلوب",
   "validationAmountInvalid": "يرجى إدخال مبلغ صحيح",
   "validationAmountGreaterThanZero": "يجب أن يكون المبلغ أكبر من صفر",
-  "validationCategoryRequired": "يرجى اختيار فئة المعاملة"
+  "validationCategoryRequired": "يرجى اختيار فئة المعاملة",
+  "transactionSuccessMessage": "تمت إضافة المعاملة بنجاح",
+  "transactionSuccessDescription": "تم تسجيل معاملتك بشكل آمن في السجل",
+  "transactionErrorMessage": "فشلت إضافة المعاملة",
+  "transactionErrorDescription": "حدث خطأ أثناء إضافة المعاملة، يرجى المحاولة مرة أخرى"
 
 }

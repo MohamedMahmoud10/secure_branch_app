@@ -75,7 +75,11 @@
   "validationAmountRequired": "Amount is required",
   "validationAmountInvalid": "Please enter a valid amount",
   "validationAmountGreaterThanZero": "Amount must be greater than zero",
-  "validationCategoryRequired": "Please select a transaction category"
+  "validationCategoryRequired": "Please select a transaction category",
+  "transactionSuccessMessage": "Transaction added successfully",
+  "transactionSuccessDescription": "Your transaction has been securely recorded to the ledger",
+  "transactionErrorMessage": "Transaction failed",
+  "transactionErrorDescription": "An error occurred while adding the transaction, please try again"
 
 }
 
