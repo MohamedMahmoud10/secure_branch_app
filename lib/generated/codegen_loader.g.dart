@@ -75,7 +75,23 @@ class CodegenLoader extends AssetLoader{
   "merchantRecipient": "التاجر / المستلم",
   "amount": "المبلغ",
   "transactionCategory": "فئة المعاملة",
-  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل"
+  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل",
+  "couldNotLaunchMaps": "تعذر فتح الخرائط",
+  "noAddressAvailable": "لا يوجد عنوان متاح",
+  "open": "مفتوح",
+  "closed": "مغلق",
+  "navigateToBranch": "الانتقال إلى الفرع",
+  "secureBranches": "الفروع الآمنة",
+  "searchLocations": "البحث عن المواقع...",
+  "shop": "تسوق",
+  "food": "طعام",
+  "transport": "مواصلات",
+  "otherText": "أخرى",
+  "validationMerchantNameRequired": "اسم التاجر مطلوب",
+  "validationAmountRequired": "المبلغ مطلوب",
+  "validationAmountInvalid": "يرجى إدخال مبلغ صحيح",
+  "validationAmountGreaterThanZero": "يجب أن يكون المبلغ أكبر من صفر",
+  "validationCategoryRequired": "يرجى اختيار فئة المعاملة"
 };
 static const Map<String,dynamic> _en = {
   "pullToRefreshIdleText": "Pull down to refresh",
@@ -138,7 +154,23 @@ static const Map<String,dynamic> _en = {
   "merchantRecipient": "Merchant / Recipient",
   "amount": "Amount",
   "transactionCategory": "Transaction Category",
-  "encryptAndPushToLedger": "Encrypt & Push to Ledger"
+  "encryptAndPushToLedger": "Encrypt & Push to Ledger",
+  "couldNotLaunchMaps": "Could not launch maps",
+  "noAddressAvailable": "No address available",
+  "open": "OPEN",
+  "closed": "CLOSED",
+  "navigateToBranch": "Navigate to Branch",
+  "secureBranches": "SECURE BRANCHES",
+  "searchLocations": "Search locations...",
+  "shop": "Shop",
+  "food": "Food",
+  "transport": "Transport",
+  "otherText": "Other",
+  "validationMerchantNameRequired": "Merchant name is required",
+  "validationAmountRequired": "Amount is required",
+  "validationAmountInvalid": "Please enter a valid amount",
+  "validationAmountGreaterThanZero": "Amount must be greater than zero",
+  "validationCategoryRequired": "Please select a transaction category"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": _ar, "en": _en};
 }

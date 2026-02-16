@@ -3,8 +3,10 @@ import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
+import 'package:secure_branch_app/core/assets/app_icons.dart';
 import 'package:toastification/toastification.dart';
 
 class ToastManager {
@@ -21,10 +23,10 @@ class ToastManager {
     int? autoCloseDuration,
   }) {
     toastification.show(
-      borderSide: const BorderSide(color: AppColors.primary),
+      borderSide: const BorderSide(color: AppColors.green200),
       backgroundColor: Theme.of(context).colorScheme.primary,
       context: context,
-      icon: const Icon(Icons.fax_rounded),
+      icon: SvgPicture.asset(AppIcons.toastSuccessIcon),
       style: ToastificationStyle.flat,
       title: Text(
         message,

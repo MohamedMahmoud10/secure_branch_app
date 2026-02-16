@@ -17,6 +17,7 @@ class DatabaseConstants {
   ///START REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 
   static const String userDataTable = 'USER-DATA-TABLE';
+  static const String branchesTable = 'BRANCHES-TABLE';
 
   ///END REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 

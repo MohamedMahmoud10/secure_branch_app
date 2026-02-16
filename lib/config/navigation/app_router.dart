@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/navigation/app_routes.dart';
 import 'package:secure_branch_app/config/navigation/route_names.dart';
 import 'package:secure_branch_app/core/auth/auth_state_notifier.dart';
+import 'package:secure_branch_app/core/di/index.dart';
 import 'package:secure_branch_app/utils/app_logger.dart';
 
 final GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
@@ -14,8 +15,7 @@ final GlobalKey<NavigatorState> shellBranchesNavigatorStateKey =
 final GlobalKey<NavigatorState> shellFavoritesNavigatorStateKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellFavorites');
 
-final AuthStateNotifier _authNotifier =
-    AuthStateNotifier(FirebaseAuth.instance);
+final AuthStateNotifier _authNotifier = AuthStateNotifier(di<FirebaseAuth>());
 
 final GoRouter router = GoRouter(
   initialLocation: RouteNames.splash,
@@ -24,10 +24,10 @@ final GoRouter router = GoRouter(
   refreshListenable: _authNotifier,
   redirect: (BuildContext context, GoRouterState state) {
     final String path = state.uri.path;
-    if (path == RouteNames.splash) return null;
+    if (path == RouteNames.splash||path == RouteNames.login || path == RouteNames.register) return null;
     final User? user = _authNotifier.currentUser;
+    AppLogger().info('User Data From Firebase Is $user');
     if (user == null) {
-      if (path == RouteNames.login || path == RouteNames.register) return null;
       return RouteNames.login;
     }
     if (path == RouteNames.login || path == RouteNames.register) {

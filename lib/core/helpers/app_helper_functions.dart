@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +10,9 @@ import 'package:secure_branch_app/core/di/index.dart';
 import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local_data_base.dart';
 import 'package:secure_branch_app/core/utilities/constants/index.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/generated/locale_keys.g.dart';
 import 'package:secure_branch_app/utils/app_logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A utility class that provides helper functions for common tasks
 /// such as routing, transitions, and checking user states from local storage.
@@ -181,11 +184,11 @@ class AppHelperFunctions {
         return;
       }
 
-      await dbClient.ensureUserBoxOpen();
       final UserDataModel? userData = dbClient.get<UserDataModel>(
         tableName: DatabaseConstants.userDataTable,
         key: DatabaseConstants.userDataKey,
       );
+      AppLogger().info('The Cached User Data Is $userData');
 
       if (userData == null) {
         AppLogger().error(
@@ -199,6 +202,39 @@ class AppHelperFunctions {
     } catch (e, stackTrace) {
       AppLogger().error('Error while checking cached keys: $e\n$stackTrace');
       router.go(RouteNames.login);
+    }
+  }
+
+  /// Opens the native maps application for turn-by-turn navigation
+  /// to the provided latitude and longitude.
+  ///
+  /// This method attempts to launch Google Maps first (using the
+  /// `google.navigation` scheme). If Google Maps is not available,
+  /// it falls back to Apple Maps.
+  ///
+  /// Parameters:
+  /// - [lat]: Destination latitude. If `null`, the method returns early.
+  /// - [lng]: Destination longitude. If `null`, the method returns early.
+  ///
+  /// Behavior:
+  /// - Launches Google Maps if supported on the device.
+  /// - Otherwise, launches Apple Maps if available.
+  /// - If neither maps application can be launched, an exception is thrown.
+  ///
+  /// Throws:
+  /// - A [String] error if no compatible maps application is found.
+
+  Future<void> openMap(double? lat, double? lng) async {
+    if (lat == null || lng == null) return;
+    final Uri googleMapsUrl = Uri.parse('google.navigation:q=$lat,$lng');
+    final Uri appleMapsUrl = Uri.parse('https://maps.apple.com/?q=$lat,$lng');
+
+    if (await canLaunchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl);
+    } else if (await canLaunchUrl(appleMapsUrl)) {
+      await launchUrl(appleMapsUrl);
+    } else {
+      throw Exception(LocaleKeys.couldNotLaunchMaps.tr());
     }
   }
 }

@@ -59,6 +59,22 @@
   "merchantRecipient": "التاجر / المستلم",
   "amount": "المبلغ",
   "transactionCategory": "فئة المعاملة",
-  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل"
+  "encryptAndPushToLedger": "تشفير وإرسال إلى السجل",
+  "couldNotLaunchMaps": "تعذر فتح الخرائط",
+  "noAddressAvailable": "لا يوجد عنوان متاح",
+  "open": "مفتوح",
+  "closed": "مغلق",
+  "navigateToBranch": "الانتقال إلى الفرع",
+  "secureBranches": "الفروع الآمنة",
+  "searchLocations": "البحث عن المواقع...",
+  "shop": "تسوق",
+  "food": "طعام",
+  "transport": "مواصلات",
+  "otherText": "أخرى",
+  "validationMerchantNameRequired": "اسم التاجر مطلوب",
+  "validationAmountRequired": "المبلغ مطلوب",
+  "validationAmountInvalid": "يرجى إدخال مبلغ صحيح",
+  "validationAmountGreaterThanZero": "يجب أن يكون المبلغ أكبر من صفر",
+  "validationCategoryRequired": "يرجى اختيار فئة المعاملة"
 
 }

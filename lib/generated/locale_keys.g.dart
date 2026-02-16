@@ -64,5 +64,21 @@ abstract class  LocaleKeys {
   static const amount = 'amount';
   static const transactionCategory = 'transactionCategory';
   static const encryptAndPushToLedger = 'encryptAndPushToLedger';
+  static const couldNotLaunchMaps = 'couldNotLaunchMaps';
+  static const noAddressAvailable = 'noAddressAvailable';
+  static const open = 'open';
+  static const closed = 'closed';
+  static const navigateToBranch = 'navigateToBranch';
+  static const secureBranches = 'secureBranches';
+  static const searchLocations = 'searchLocations';
+  static const shop = 'shop';
+  static const food = 'food';
+  static const transport = 'transport';
+  static const otherText = 'otherText';
+  static const validationMerchantNameRequired = 'validationMerchantNameRequired';
+  static const validationAmountRequired = 'validationAmountRequired';
+  static const validationAmountInvalid = 'validationAmountInvalid';
+  static const validationAmountGreaterThanZero = 'validationAmountGreaterThanZero';
+  static const validationCategoryRequired = 'validationCategoryRequired';
 
 }

@@ -27,6 +27,11 @@ import '../../features/authentication/store_user_data/data/data_sources/remote_d
     as _i897;
 import '../../features/authentication/store_user_data/data/repo/store_user_data_repo.dart'
     as _i73;
+import '../../features/branch/data/data_sources/local_data_source/branches_local_data_source.dart'
+    as _i1034;
+import '../../features/branch/data/data_sources/remote_data_source/branches_remote_data_source.dart'
+    as _i707;
+import '../../features/branch/data/repo/branches_repo.dart' as _i590;
 import '../../features/transactions/data/remote_data_source/add_transaction_remote_data_source.dart'
     as _i640;
 import '../../features/transactions/data/remote_data_source/user_transactions_remote_data_source.dart'
@@ -100,6 +105,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i405.BaseDatabase>(),
       ),
     );
+    gh.lazySingleton<_i1034.BranchesLocalDataSource>(
+      () => _i1034.BranchesLocalDataSource(gh<_i405.BaseDatabase>()),
+    );
     gh.lazySingleton<_i1058.GetUserDataRepo>(
       () => _i1058.GetUserDataRepo(
         gh<_i480.GetUserDataRemoteDataSource>(),
@@ -111,9 +119,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i804.UserTransactionsRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i707.BranchesRemoteDataSource>(
+      () => _i707.BranchesRemoteDataSource(gh<_i865.ApiConsumer>()),
+    );
     gh.lazySingleton<_i704.AddTransactionRepo>(
       () =>
           _i704.AddTransactionRepo(gh<_i640.AddTransactionRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i590.BranchesRepo>(
+      () => _i590.BranchesRepo(
+        gh<_i707.BranchesRemoteDataSource>(),
+        gh<_i1034.BranchesLocalDataSource>(),
+      ),
     );
     return this;
   }

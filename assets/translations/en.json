@@ -59,7 +59,23 @@
   "merchantRecipient": "Merchant / Recipient",
   "amount": "Amount",
   "transactionCategory": "Transaction Category",
-  "encryptAndPushToLedger": "Encrypt & Push to Ledger"
+  "encryptAndPushToLedger": "Encrypt & Push to Ledger",
+  "couldNotLaunchMaps": "Could not launch maps",
+  "noAddressAvailable": "No address available",
+  "open": "OPEN",
+  "closed": "CLOSED",
+  "navigateToBranch": "Navigate to Branch",
+  "secureBranches": "SECURE BRANCHES",
+  "searchLocations": "Search locations...",
+  "shop": "Shop",
+  "food": "Food",
+  "transport": "Transport",
+  "otherText": "Other",
+  "validationMerchantNameRequired": "Merchant name is required",
+  "validationAmountRequired": "Amount is required",
+  "validationAmountInvalid": "Please enter a valid amount",
+  "validationAmountGreaterThanZero": "Amount must be greater than zero",
+  "validationCategoryRequired": "Please select a transaction category"
 
 }
 

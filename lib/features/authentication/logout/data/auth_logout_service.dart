@@ -4,6 +4,7 @@ import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local
 import 'package:secure_branch_app/core/infrastructure/secure_storage/secure_storage_service.dart';
 import 'package:secure_branch_app/core/utilities/constants/index.dart';
 import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
 
 @lazySingleton
 class AuthLogoutService {
@@ -21,12 +22,18 @@ class AuthLogoutService {
   /// and removes the encryption key from secure storage.
   Future<void> logout() async {
     await _auth.signOut();
-    await _db.ensureUserBoxOpen();
-    await _db.delete<UserDataModel>(
-      tableName: DatabaseConstants.userDataTable,
-      key: DatabaseConstants.userDataKey,
-    );
-    await _db.closeUserBox();
+
+
+    await Future.wait(<Future<void>>[
+      _db.delete<UserDataModel>(
+        tableName: DatabaseConstants.userDataTable,
+        key: DatabaseConstants.userDataKey,
+      ),
+      _db.clear<BranchesResponseModel>(
+        tableName: DatabaseConstants.branchesTable,
+      ),
+    ]);
+
     await _secureStorage.deleteHiveEncryptionKey();
   }
 }
