@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:secure_branch_app/config/navigation/app_routes.dart';
 import 'package:secure_branch_app/config/navigation/route_names.dart';
-import 'package:secure_branch_app/core/auth/auth_state_notifier.dart';
+import 'package:secure_branch_app/core/services/auth_state_notifier.dart';
 import 'package:secure_branch_app/core/di/index.dart';
 import 'package:secure_branch_app/utils/app_logger.dart';
 

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:secure_branch_app/config/theme/app_colors.dart';
+import 'package:secure_branch_app/core/common_widgets/branch_card_view.dart';
 import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
 import 'package:secure_branch_app/features/branch/presentation/cubits/branches_cubit/branches_cubit.dart';
 import 'package:secure_branch_app/features/branch/presentation/shimmers/branch_shimmer_view.dart';
