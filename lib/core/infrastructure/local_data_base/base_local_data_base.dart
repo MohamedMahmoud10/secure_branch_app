@@ -81,7 +81,7 @@ abstract class BaseDatabase {
   ///
   /// Returns a [Future] that completes with void when the all rows are deleted.
   ///
-  Future<int> clear({
+  Future<int> clear<T>({
     required String tableName,
   });
 
@@ -103,4 +103,10 @@ abstract class BaseDatabase {
     required String key,
     required T Function(T current) updateCallback,
   });
+
+  /// Ensures the encrypted user box is open (for implementations that use it).
+  /// Call before reading user data when the user is authenticated.
+  /// Implementations should always open the user box with the correct model type.
+  Future<void> ensureUserBoxOpen();
+
 }

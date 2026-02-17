@@ -84,26 +84,30 @@ extension AppTextThemeData on AppTheme {
         letterSpacing: 0,
       ),
 
+      ///USED
       labelMedium: TextStyle(
         fontSize: 16.sp,
-        fontWeight: AppDimensions.medium,
+        fontWeight: AppDimensions.semiBold,
         fontFamily: fontFamily,
-        color: colorScheme.primary,
+        color: AppColors.primaryLight,
       ),
 
+      ///USED
       labelSmall: TextStyle(
         fontSize: 14.sp,
         fontWeight: AppDimensions.medium,
         fontFamily: fontFamily,
-        color: colorScheme.shadow,
+        color: AppColors.textHint,
         letterSpacing: 0,
       ),
 
+      ///USED
       bodyLarge: TextStyle(
-        fontSize: 18.sp,
-        fontFamily: fontFamily,
+        color: AppColors.primaryWhite,
+        fontSize: 26.sp,
         fontWeight: AppDimensions.bold,
-        color: colorScheme.shadow,
+
+        fontFamily: fontFamily,
         letterSpacing: 0,
       ),
 

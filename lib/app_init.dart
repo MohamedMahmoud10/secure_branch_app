@@ -42,6 +42,7 @@ class AppInit {
     await ScreenUtil.ensureScreenSize();
 
     await di<BaseDatabase>().init();
+
     Bloc.observer = AppBlocObserver();
   }
 }

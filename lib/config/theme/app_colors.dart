@@ -79,6 +79,21 @@ class AppColors {
   static const Color red1000 = Color(0xFFE61A1A);
   static const Color red11000 = Color(0xFFEA5455);
 
+
+  // Green Colors
+  static const Color green100 = Color(0xFF37B48A);
+  static const Color green200 = Color(0xFF99E3C3);
+  static const Color green300 = Color(0xFF66D6A5);
+  static const Color green400 = Color(0xFF33C887);
+  static const Color green500Base = Color(0xFF00BA69);
+  static const Color darkGreen500 = Color(0xFF0E9384);
+  static const Color green600 = Color(0xFF009554);
+  static const Color green700 = Color(0xFF00703F);
+  static const Color green800 = Color(0xFF004A2A);
+  static const Color green900 = Color(0xFF002515);
+  static const Color green1000 = Color(0xFFEBF8F3);
+  static const Color activeGreen = Color(0xFF76EE59);
+
   static const Color transparent = Colors.transparent;
   static const Color primaryWhite = Colors.white;
   static const Color primaryBlack = Colors.black;

@@ -30,7 +30,7 @@ class CustomLoadingButton<C extends Cubit<S>, S extends LoadableState?>
 
   final String? text;
   final VoidCallback onTap;
-  final VoidCallback ?errorCallBack;
+  final VoidCallback? errorCallBack;
   final double? height;
   final double? width;
   final Color? backGroundColor;
@@ -56,35 +56,20 @@ class CustomLoadingButton<C extends Cubit<S>, S extends LoadableState?>
             maximumSize: Size(width ?? 343.w, height ?? 48.h),
             minimumSize: Size(width ?? 343.w, height ?? 48.h),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                borderRadius ?? 8.r,
-              ),
+              borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
             ),
             padding: EdgeInsets.zero,
             elevation: 0,
-
           ),
           onPressed: isClickable! && !isLoading ? onTap : errorCallBack,
           child: AnimatedContainer(
             width: width ?? 343.w,
             height: height ?? 48.h,
             decoration: BoxDecoration(
-              color: hasGradientColor!
-                  ? null
-                  : isClickable!?backGroundColor ?? Theme.of(context).colorScheme.onTertiary:unClickableButtonColor,
-              gradient: hasGradientColor!
-                  ? LinearGradient(
-                      begin: const Alignment(0.11, 0.99),
-                      end: const Alignment(-0.11, -0.99),
-                      colors: <Color>[
-                        Theme.of(context).colorScheme.secondary,
-                        Theme.of(context).colorScheme.onSecondaryContainer,
-                      ],
-                    )
-                  : null,
-              borderRadius: BorderRadius.circular(
-                8.r,
-              ),
+              color: isClickable!
+                  ? backGroundColor ?? Theme.of(context).colorScheme.onTertiary
+                  : unClickableButtonColor ?? AppColors.textHint,
+              borderRadius: BorderRadius.circular(8.r),
             ),
             duration: const Duration(milliseconds: 300),
             child: isLoading
@@ -96,17 +81,14 @@ class CustomLoadingButton<C extends Cubit<S>, S extends LoadableState?>
                     ),
                   )
                 : text != null
-                    ? AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 300),
-                        style:
-                            Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  color: textColor ?? AppColors.primaryWhite,
-                                ),
-                        child: Text(
-                          text!,
-                        ).wrapCenter(),
-                      )
-                    : child,
+                ? AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 300),
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: textColor ?? AppColors.primaryWhite,
+                    ),
+                    child: Text(text!).wrapCenter(),
+                  )
+                : child,
           ),
         );
       },

@@ -5,26 +5,14 @@ class DatabaseConstants {
   const DatabaseConstants._();
 
   ///Start REGION OF TABLES OF CACHES DATA ON FIRESTORE DATA BASE
-
-  static const String individualsCollection = 'individualsCollection';
-  static const String institutionsCollection = 'institutionsCollection';
-  static const String companiesCollection = 'companiesCollection';
-  static const String uIRealTimeChangesCollection =
-      'uIRealTimeChangesCollection';
-  static const String allServicesCollection = 'allServicesCollection';
-  static final String reviewsCollection = dotenv.get(
-    AppConstantStrings.reviewsCollection,
-  );
-
-  static const String contacts = 'contactsCollection';
-  static const String usersTokensCollection = 'usersTokensCollection';
   static final String usersDataCollection = dotenv.get(
     AppConstantStrings.usersDataCollection,
   );
-  static const String transactionsCollection = 'transactionsCollection';
-  static const String serviceDetailsSubCollection = 'details';
-  static final String notificationsCollection = dotenv.get(
-    AppConstantStrings.notificationsCollection,
+  static final String userTransactionCollection = dotenv.get(
+    AppConstantStrings.transactionCollection,
+  );
+  static final String userFavoritesCollection = dotenv.get(
+    AppConstantStrings.favorites,
   );
 
   ///END REGION OF TABLES OF CACHES DATA ON FIRESTORE DATA BASE
@@ -32,21 +20,19 @@ class DatabaseConstants {
   ///START REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 
   static const String userDataTable = 'USER-DATA-TABLE';
-  static const String userDataBoolTable = 'USER-DATA-BOOL-TABLE';
-  static const String servicesDataTable = 'SERVICES-DATA-TABLE';
+  static const String branchesTable = 'BRANCHES-TABLE';
+  static const String favoritesTable = 'FAVORITES-TABLE';
 
   ///END REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 
   ///Start REGION OF CACHE KEYS
   static const String userDataKey = 'USER-DATA-VALUE';
-  static const String hasAcceptPolicyKey = 'HAS-ACCEPT-POLICY-VALUE';
-  static const String themeKey = 'isDarkMode';
-  static const String completeLogin = 'COMPLETE-LOGIN-VALUE';
+  static const String aesKeyStorageKey = 'BIOMETRIC-AES-KEY';
+  static const String aesIvStorageKey = 'BIOMETRIC-AES-IV';
+  static const String encryptedPasswordKey = 'BIOMETRIC-ENCRYPTED-PASSWORD';
+  static const String biometricEmailKey = 'BIOMETRIC-USER-EMAIL';
+  static const String biometricEnrolledKey = 'BIOMETRIC-ENROLLED';
 
   ///END REGION OF TABLES OF CACHES DATA ON HIVE LOCAL DATA BASE
 
-  /// Start REGION UNUSED COLLECTIONS
-  static const String chatCollection = 'chatCollection';
-
-/// End REGION UNUSED COLLECTIONS
 }

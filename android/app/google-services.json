@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "817268268364",
-    "project_id": "branch-app-79b6d",
-    "storage_bucket": "branch-app-79b6d.firebasestorage.app"
+    "project_number": "504178606232",
+    "project_id": "branch-app-e0c55",
+    "storage_bucket": "branch-app-e0c55.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:817268268364:android:050a7d2edc21a03a2703e9",
+        "mobilesdk_app_id": "1:504178606232:android:50aa4176c7bb08cf1790ed",
         "android_client_info": {
           "package_name": "com.secure.branch.app"
         }
@@ -15,26 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAlUvZyx0jcdrMZErQ4ww-dnFUfy_9zG0g"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:817268268364:android:8e6ddfd3b6bd99a62703e9",
-        "android_client_info": {
-          "package_name": "com.secure_branch_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAlUvZyx0jcdrMZErQ4ww-dnFUfy_9zG0g"
+          "current_key": "AIzaSyCa7KlVPEss3qTtYW1wZu291Xu9685DSD0"
         }
       ],
       "services": {

@@ -1,0 +1,44 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:injectable/injectable.dart';
+import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local_data_base.dart';
+import 'package:secure_branch_app/core/infrastructure/secure_storage/secure_storage_service.dart';
+import 'package:secure_branch_app/core/utilities/constants/index.dart';
+import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
+
+@lazySingleton
+class AuthLogoutService {
+  AuthLogoutService(
+    this._auth,
+    this._db,
+    this._secureStorage,
+  );
+
+  final FirebaseAuth _auth;
+  final BaseDatabase _db;
+  final SecureStorageService _secureStorage;
+
+  /// Signs out from Firebase, clears local user data, closes the user box,
+  /// and removes the Hive encryption key from secure storage.
+  ///
+  /// **Biometric keys & encrypted credentials are preserved** so the user
+  /// can sign back in with biometric without re-enrolling.
+  Future<void> logout() async {
+    await _auth.signOut();
+
+    await Future.wait(<Future<void>>[
+      _db.delete<UserDataModel>(
+        tableName: DatabaseConstants.userDataTable,
+        key: DatabaseConstants.userDataKey,
+      ),
+      _db.clear<BranchesResponseModel>(
+        tableName: DatabaseConstants.branchesTable,
+      ),
+      _db.clear<BranchesResponseModel>(
+        tableName: DatabaseConstants.favoritesTable,
+      ),
+    ]);
+
+    await _secureStorage.deleteHiveEncryptionKey();
+  }
+}

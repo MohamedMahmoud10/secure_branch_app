@@ -1,20 +1,51 @@
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
 import 'package:secure_branch_app/core/infrastructure/local_data_base/base_local_data_base.dart';
+import 'package:secure_branch_app/core/infrastructure/secure_storage/secure_storage_service.dart';
+import 'package:secure_branch_app/core/utilities/constants/index.dart';
+import 'package:secure_branch_app/features/authentication/store_user_data/data/models/user_data_model.dart';
+import 'package:secure_branch_app/features/branch/data/models/branches_response_model.dart';
+import 'package:secure_branch_app/hive_registrar.g.dart';
+import 'package:secure_branch_app/utils/app_logger.dart';
 
 @LazySingleton(as: BaseDatabase)
 class HiveDatabaseClient implements BaseDatabase {
+  HiveDatabaseClient(this._secureStorage);
+
+  final SecureStorageService _secureStorage;
+
   @override
   Future<void> init() async {
     await Hive.initFlutter();
+    Hive.registerAdapters();
 
-    // region register adapters
+    await _ensureEncryptedBoxOpen<BranchesResponseModel>(
+      DatabaseConstants.branchesTable,
+    );
+    await _ensureEncryptedBoxOpen<BranchesResponseModel>(
+      DatabaseConstants.favoritesTable,
+    );
+    await _ensureEncryptedBoxOpen<UserDataModel>(DatabaseConstants.userDataTable);
 
-    // endregion
-
-    // region open boxes
-    // endregion
   }
+
+  Future<void> _ensureEncryptedBoxOpen<T>(String tableName) async {
+    if (Hive.isBoxOpen(tableName)) return;
+    List<int>? key = await _secureStorage.readHiveEncryptionKey();
+    if (key == null || key.length != 32) {
+      AppLogger().info('Generate Key $key');
+      key = Hive.generateSecureKey();
+      await _secureStorage.writeHiveEncryptionKey(key);
+    }
+    AppLogger().info('No Need Generate Key Already Cached $key');
+
+    await Hive.openBox<T>(tableName, encryptionCipher: HiveAesCipher(key));
+  }
+
+  /// Always opens the user box as [UserDataModel]. No type parameter needed.
+  @override
+  Future<void> ensureUserBoxOpen() =>
+      _ensureEncryptedBoxOpen<UserDataModel>(DatabaseConstants.userDataTable);
 
   @override
   Future<void> save<T>({
@@ -34,27 +65,20 @@ class HiveDatabaseClient implements BaseDatabase {
   }) async {
     if (list != null && keys != null && list.length == keys.length) {
       final Box<T> box = Hive.box<T>(tableName);
-      for (int i = 0; i < list.length; i++) {
-        await box.put(keys[i], list[i]);
-      }
+      await box.putAll(Map<dynamic, T>.fromIterables(keys, list));
     }
   }
 
   @override
-  T? get<T>({
-    required String tableName,
-    required String key,
-  }) {
-    final Box<T> box = Hive.box<T>(tableName);
-    return box.get(key);
+  T? get<T>({required String tableName, required String key}) {
+    if (!Hive.isBoxOpen(tableName)) return null;
+    return Hive.box<T>(tableName).get(key);
   }
 
   @override
-  List<T>? getAll<T>({
-    required String tableName,
-  }) {
-    final Box<T> box = Hive.box<T>(tableName);
-    return box.values.toList();
+  List<T>? getAll<T>({required String tableName}) {
+    if (!Hive.isBoxOpen(tableName)) return null;
+    return Hive.box<T>(tableName).values.toList();
   }
 
   @override
@@ -67,17 +91,15 @@ class HiveDatabaseClient implements BaseDatabase {
   }
 
   @override
-  Future<int> clear({
-    required String tableName,
-  }) async {
-    final Box<dynamic> box = Hive.box(tableName);
+  Future<int> clear<T>({required String tableName}) async {
+    final Box<T> box = Hive.box<T>(tableName);
     return box.clear();
   }
 
   @override
-  Future<int> add<T>({required String tableName, required T data}) {
+  Future<int> add<T>({required String tableName, required T data}) async {
     final Box<T> box = Hive.box<T>(tableName);
-    return box.add(data); // Perform type casting to match the type of the box
+    return box.add(data);
   }
 
   @override
